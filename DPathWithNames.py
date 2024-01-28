@@ -5,7 +5,6 @@ import re
 import en_core_web_trf
 from datetime import datetime
 import sys
-import subprocess
 
 
 
@@ -119,8 +118,12 @@ def find_names_in_everything(directory_path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python3 DPathWithNames.py <file_path>")
+        print("Usage: python3 <script_name.py> <directory_path>")
         sys.exit(1)
 
-    file_path = sys.argv[1]
-    subprocess.run(["python3", "DPathWithNames.py", file_path])
+    directory_path = sys.argv[1]
+    if not os.path.isdir(directory_path):
+        print(f"Error: {directory_path} is not a valid directory.")
+        sys.exit(1)
+
+    main(directory_path)
