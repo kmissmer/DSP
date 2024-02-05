@@ -2,7 +2,6 @@ import spacy
 import os
 import json
 import re
-import en_core_web_trf
 from datetime import datetime
 import sys
 
