@@ -1,2 +1,2 @@
-spacy>=3.0.0
+spacy
 en-core-web-lg
