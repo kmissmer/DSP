@@ -12,7 +12,7 @@ def chunk_reader(file_content, nlp):
     doc = nlp(file_content)
     return doc
     
-def extract_names_emails(doc):
+def extractInformation(doc):
     names = []
     emails = []
     organizations = []
@@ -31,11 +31,12 @@ def extract_names_emails(doc):
     return names,emails,organizations,phones
 
 
+
 def process_files(file_path,nlp):
-    extracted_names = []
-    emails = []
-    organizations = []
-    phones = []
+    NamesExtracted = []
+    EmailsExtracted = []
+    OrganizationsExtracted = []
+    PhoneNumbersExtracted = []
     try:
         print(f"Processing file: {file_path}")  # Display the file being processed
         print("Start Time:", datetime.now())  #display time it started processing
@@ -48,9 +49,9 @@ def process_files(file_path,nlp):
             for start_idx in range(0, len(cleaned_content), chunk_size):
                 chunk_text = cleaned_content[start_idx:start_idx + chunk_size]
                 doc = chunk_reader(chunk_text, nlp)
-                extracted_names,emails,organizations,phones = extract_names_emails(doc)
+                NamesExtracted,EmailsExtracted,OrganizationsExtracted,PhoneNumbersExtracted = extractInformation(doc)
         print("Done!")
-        return extracted_names,emails, organizations, phones
+        return NamesExtracted,EmailsExtracted, OrganizationsExtracted, PhoneNumbersExtracted
 
     except (json.JSONDecodeError, OSError) as error:
         print(f"Error processing file {file_path}: {str(error)}")
