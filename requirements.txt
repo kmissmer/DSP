@@ -1,2 +1,2 @@
 spacy
-en-core-web-lg
+en_core_web_lg
