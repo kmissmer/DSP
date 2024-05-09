@@ -34,7 +34,7 @@ def process_file(file_path, nlp):
 
         with open(file_path, 'r') as file:
             content = file.read()
-            chunk_size = 1000000  # 1 million characters per chunk
+            chunk_size = 500000  # 500k characters per chunk
             chunks = [content[i:i+chunk_size] for i in range(0, len(content), chunk_size)]
 
         with ThreadPoolExecutor() as executor:
