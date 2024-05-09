@@ -75,6 +75,7 @@ def find_names_in_everything(directory_path):
                 with open(output_filename, "a") as text_file:
                     json.dump(result, text_file)
                     text_file.write("\n")
+                print(f"Done processing {file_path}")
 
     files_to_process = [os.path.join(root, file) for root, _, files in os.walk(directory_path) for file in files]
 
