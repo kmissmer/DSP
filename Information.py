@@ -10,8 +10,7 @@ def clean_text(text):
     return text
 
 
-def chunk_reader(file_path):
-    chunk_size = 2000000  # 2 million characters
+def chunk_reader(file_path, chunk_size=1000000):
     with open(file_path, 'r') as file:
         while True:
             chunk = file.read(chunk_size)
@@ -69,7 +68,9 @@ def find_names_in_everything(directory_path):
     output_filename = "output.txt"
     processed_files = set()
 
+    # Load spaCy model with increased max_length limit
     nlp = spacy.load("en_core_web_lg")
+    nlp.max_length = 1000000  # Set max_length to 1 million characters
 
     if os.path.exists(output_filename):
         with open(output_filename, "r") as output_file:
