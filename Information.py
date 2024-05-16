@@ -6,9 +6,6 @@ from datetime import datetime
 import sys
 
 
-def clean_text(text):
-    return text
-
 
 def chunk_reader(file_path, chunk_size=1000000):
     with open(file_path, 'r') as file:
@@ -49,8 +46,7 @@ def process_files(file_path, nlp):
         print("Start Time:", datetime.now())  # display time it started processing
 
         for chunk in chunk_reader(file_path):
-            cleaned_chunk = clean_text(chunk)
-            names, emails, organizations, phones = extract_information(nlp, cleaned_chunk)
+            names, emails, organizations, phones = extract_information(nlp, chunk)
             NamesExtracted.extend(names)
             EmailsExtracted.extend(emails)
             OrganizationsExtracted.extend(organizations)
