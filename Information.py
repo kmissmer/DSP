@@ -51,7 +51,7 @@ def process_files(file_path,nlp):
            content = file.read()
            cleaned_content = clean_text(content)
            start_idx = 0
-           chunk_size = 1000000  # 1 million characters per chunk
+           chunk_size = 100000  # 100k characters per chunk
            for start_idx in range(0, len(cleaned_content), chunk_size):
                chunk_text = cleaned_content[start_idx:start_idx + chunk_size]
                doc = chunk_reader(chunk_text, nlp)
