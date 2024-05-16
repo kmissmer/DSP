@@ -1,10 +1,8 @@
 import spacy
 import os
 import json
-import re
 from datetime import datetime
 import sys
-
 
 
 def chunk_reader(file_path, chunk_size=1000000):
@@ -16,48 +14,32 @@ def chunk_reader(file_path, chunk_size=1000000):
             yield chunk
 
 
-def extract_information(nlp, chunk):
+def extract_names(nlp, chunk):
     doc = nlp(chunk)
     names = []
-    emails = []
-    organizations = []
-    phones = []
     if doc.ents:
         for ent in doc.ents:
             if ent.label_ == "PERSON":
                 names.append(ent.text)
-            if ent.label_ == "EMAIL":
-                emails.append(ent.text)
-            if ent.label_ == "ORG":
-                organizations.append(ent.text)
-        # get 10-digit phone number
-        phone_pattern = re.compile(r'\d{10}')
-        phones.extend(re.findall(phone_pattern, doc.text))
-    return names, emails, organizations, phones
+    return names
 
 
 def process_files(file_path, nlp):
     NamesExtracted = []
-    EmailsExtracted = []
-    OrganizationsExtracted = []
-    PhoneNumbersExtracted = []
     try:
         print(f"Processing file: {file_path}")  # Display the file being processed
         print("Start Time:", datetime.now())  # display time it started processing
 
         for chunk in chunk_reader(file_path):
-            names, emails, organizations, phones = extract_information(nlp, chunk)
+            names = extract_names(nlp, chunk)
             NamesExtracted.extend(names)
-            EmailsExtracted.extend(emails)
-            OrganizationsExtracted.extend(organizations)
-            PhoneNumbersExtracted.extend(phones)
 
         print("Done!")
-        return NamesExtracted, EmailsExtracted, OrganizationsExtracted, PhoneNumbersExtracted
+        return NamesExtracted
 
     except (json.JSONDecodeError, OSError) as error:
         print(f"Error processing file {file_path}: {str(error)}")
-        return [], [], [], []
+        return []
 
 
 def find_names_in_everything(directory_path):
@@ -93,10 +75,9 @@ def find_names_in_everything(directory_path):
                 continue
 
             if file.endswith(('json', '.htm', '.txt')):
-                names, emails, organizations, phones = process_files(file_path, nlp)
-                if names or emails or organizations or phones:
-                    result = {"filename": file_path, "names": names, "emails": emails,
-                              "organizations": organizations, "phones": phones}
+                names = process_files(file_path, nlp)
+                if names:
+                    result = {"filename": file_path, "names": names}
                 else:
                     result = {"filename": file_path}
                 processed_files.add(file_path)
@@ -118,3 +99,4 @@ if __name__ == "__main__":
         sys.exit(1)
 
     find_names_in_everything(directory_path)
+
