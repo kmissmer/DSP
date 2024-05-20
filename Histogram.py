@@ -31,7 +31,8 @@ def plot_file_size_histogram(directory):
     plt.title('File Size Histogram')
     plt.legend()
     plt.grid(True)
-    plt.show()
+    plt.savefig('file_size_histogram.png')  # Save plot to file
+    plt.close()
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
