@@ -19,8 +19,7 @@ def plot_file_size_histogram(directory):
     plt.ylabel('Frequency')
     plt.title('File Size Histogram')
     plt.grid(True)
-    plt.savefig('file_size_histogram.png')  # Save plot to file
-    plt.close()
+    plt.show()  # Display histogram in the terminal
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
