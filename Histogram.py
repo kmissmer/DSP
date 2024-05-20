@@ -3,33 +3,21 @@ import sys
 import matplotlib.pyplot as plt
 
 def plot_file_size_histogram(directory):
-    json_files = []
-    html_files = []
-    txt_files = []
+    file_sizes = []
 
     # Iterate over files in the directory
     for root, dirs, files in os.walk(directory):
         for file in files:
             file_path = os.path.join(root, file)
             file_size = os.path.getsize(file_path)
-
-            # Categorize files based on extension
-            if file.endswith('.json'):
-                json_files.append(file_size)
-            elif file.endswith('.htm') or file.endswith('.html'):
-                html_files.append(file_size)
-            elif file.endswith('.txt'):
-                txt_files.append(file_size)
+            file_sizes.append(file_size)
 
     # Plot histogram
     plt.figure(figsize=(10, 6))
-    plt.hist(json_files, bins=20, alpha=0.5, label='JSON')
-    plt.hist(html_files, bins=20, alpha=0.5, label='HTML')
-    plt.hist(txt_files, bins=20, alpha=0.5, label='TXT')
+    plt.hist(file_sizes, bins=20, alpha=0.5)
     plt.xlabel('File Size (bytes)')
     plt.ylabel('Frequency')
     plt.title('File Size Histogram')
-    plt.legend()
     plt.grid(True)
     plt.savefig('file_size_histogram.png')  # Save plot to file
     plt.close()
