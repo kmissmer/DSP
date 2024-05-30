@@ -6,7 +6,7 @@ import sys
 
 
 def chunk_reader(file_path, chunk_size=1000000):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', errors = 'ignore' ) as file:
         while True:
             chunk = file.read(chunk_size)
             if not chunk:
