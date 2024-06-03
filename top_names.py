@@ -14,7 +14,7 @@ def main(filename):
     full_name_counts = Counter(all_full_names)
 
     # Get the top 100 full names
-    top_100_full_names = full_name_counts.most_common(100)
+    top_100_full_names = full_name_counts.most_common(1000)
 
     # Print the top 100 full names
     for name, count in top_100_full_names:
