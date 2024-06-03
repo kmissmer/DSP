@@ -7,17 +7,17 @@ def main(filename):
     with open(filename, 'r') as file:
         data = json.load(file)
 
-    # Extract names from each entry and flatten the list
-    all_names = [name for entry in data for name in entry.get('names', [])]
+    # Extract full names from each entry
+    all_full_names = [name for entry in data for name in entry.get('names', [])]
 
-    # Count occurrences of each name
-    name_counts = Counter(all_names)
+    # Count occurrences of each full name
+    full_name_counts = Counter(all_full_names)
 
-    # Get the top 100 names
-    top_100_names = name_counts.most_common(100)
+    # Get the top 100 full names
+    top_100_full_names = full_name_counts.most_common(100)
 
-    # Print the top 100 names
-    for name, count in top_100_names:
+    # Print the top 100 full names
+    for name, count in top_100_full_names:
         print(f'{name}: {count}')
 
 if __name__ == "__main__":
