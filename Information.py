@@ -6,7 +6,7 @@ import sys
 
 
 def chunk_reader(file_path, chunk_size=1000000):
-    with open(file_path, 'r', errors = 'ignore' ) as file:
+    with open(file_path, 'r', errors='ignore') as file:
         while True:
             chunk = file.read(chunk_size)
             if not chunk:
@@ -28,12 +28,16 @@ def process_files(file_path, nlp):
     NamesExtracted = []
     try:
         print(f"Processing file: {file_path}")  # Display the file being processed
-        print("Start Time:", datetime.now())  # display time it started processing
-
+        start_time = datetime.now()
+        file_size = os.path.getsize(file_path)
+        print("File Size:", file_size, "bytes")  # Display file size
         for chunk in chunk_reader(file_path):
             names = extract_names(nlp, chunk)
             NamesExtracted.extend(names)
 
+        end_time = datetime.now()
+        elapsed_time = end_time - start_time
+        print("Time taken to process:", elapsed_time)  # Display the time taken
         print("Done!")
         return NamesExtracted
 
@@ -99,4 +103,3 @@ if __name__ == "__main__":
         sys.exit(1)
 
     find_names_in_everything(directory_path)
-
