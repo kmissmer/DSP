@@ -78,7 +78,7 @@ def find_names_in_everything(directory_path):
                 print(f"Skipping {file_path}. Already processed.")
                 continue
 
-            if file.endswith(('json', '.htm', '.txt')):
+            if file.endswith(('.htm', '.txt')):
                 names = process_files(file_path, nlp)
                 if names:
                     result = {"filename": file_path, "names": names}
