@@ -39,11 +39,11 @@ def process_files(file_path, nlp):
         elapsed_time = end_time - start_time
         print("Time taken to process:", elapsed_time)  # Display the time taken
         print("Done!")
-        return NamesExtracted
+        return NamesExtracted, file_size
 
     except (json.JSONDecodeError, OSError) as error:
         print(f"Error processing file {file_path}: {str(error)}")
-        return []
+        return [], 0
 
 
 def find_names_in_everything(directory_path):
@@ -61,7 +61,7 @@ def find_names_in_everything(directory_path):
 
                 for line in data:
                     entry = json.loads(line)
-                    filename = entry.get("filename")
+                    filename = entry.get("File processed")
                     if filename:
                         processed_files.add(filename)
             except json.JSONDecodeError:
@@ -79,11 +79,19 @@ def find_names_in_everything(directory_path):
                 continue
 
             if file.endswith(('.htm', '.txt')):
-                names = process_files(file_path, nlp)
+                names, file_size = process_files(file_path, nlp)
                 if names:
-                    result = {"filename": file_path, "names": names}
+                    result = {
+                        "File processed": file_path,
+                        "File size": file_size,
+                        "Names": " ".join(names)
+                    }
                 else:
-                    result = {"filename": file_path}
+                    result = {
+                        "File processed": file_path,
+                        "File size": file_size,
+                        "Names": ""
+                    }
                 processed_files.add(file_path)
                 results.append(result)
 
