@@ -74,6 +74,8 @@ def find_names_in_everything(directory_path):
     for root, dirs, files in os.walk(directory_path):
         for file in files:
             file_path = os.path.join(root, file)
+            file_size = os.path.getsize(file_path)
+
 
             if file_path in processed_files:
                 print(f"Skipping {file_path}. Already processed.")
@@ -82,9 +84,9 @@ def find_names_in_everything(directory_path):
             if file.endswith(('.htm', '.txt')):
                 names = process_files(file_path, nlp)
                 if names:
-                    result = {"filename": file_path, "names": names}
+                    result = {"filename": file_path, "filesize": file_size, "names": names}
                 else:
-                    result = {"filename": file_path}
+                    result = {"filename": file_path, "filesize": file_size}
                 processed_files.add(file_path)
                 results.append(result)
 
