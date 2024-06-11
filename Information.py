@@ -19,8 +19,8 @@ def extract_names(nlp, chunk):
     names = []
     if doc.ents:
         for ent in doc.ents:
-            if ent.label_ == "PERSON":
-                names.append(ent.text)
+            cleaned_name = " ".join(ent.text.split())
+            names.append(cleaned_name)
     return names
 
 
