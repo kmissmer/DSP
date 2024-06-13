@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import sys
 
-def json_to_csv(json_file_path, csv_file_path):
+def json_to_csv(json_file_path, csv_file_path="output.csv"):
     try:
         # Load the JSON data from the file
         with open(json_file_path, 'r') as json_file:
@@ -19,9 +19,8 @@ def json_to_csv(json_file_path, csv_file_path):
         print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python json_to_csv.py <json_file_path> <csv_file_path>")
+    if len(sys.argv) != 2:
+        print("Usage: python json_to_csv.py <json_file_path>")
     else:
         json_file_path = sys.argv[1]
-        csv_file_path = sys.argv[2]
-        json_to_csv(json_file_path, csv_file_path)
+        json_to_csv(json_file_path)
