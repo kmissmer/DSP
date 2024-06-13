@@ -21,7 +21,9 @@ def extract_names(nlp, chunk):
         for ent in doc.ents:
             if ent.label_ == "PERSON":
                 cleaned_name = " ".join(ent.text.split())
-                names.append(cleaned_name)
+                # Filter out single-word names
+                if len(cleaned_name.split()) > 1:
+                    names.append(cleaned_name)
     return names
 
 
@@ -75,7 +77,6 @@ def find_names_in_everything(directory_path):
         for file in files:
             file_path = os.path.join(root, file)
             file_size = os.path.getsize(file_path)
-
 
             if file_path in processed_files:
                 print(f"Skipping {file_path}. Already processed.")
