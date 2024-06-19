@@ -45,19 +45,19 @@ def process_files(directory):
     # Walk through all files and subdirectories in the given directory
     for root, dirs, files in os.walk(directory):
         for filename in files:
-            if filename.endswith('.json'):
-                file_path = os.path.join(root, filename)
-                
-                # Get the absolute file path
-                abs_file_path = os.path.abspath(file_path)
-                
-                # Skip processing if abs_file_path is in processed_files
-                if abs_file_path in processed_files:
+
+            file_path = os.path.join(root, filename)
+            file_size = os.path.getsize(file_path)
+            # Get the absolute file path
+            abs_file_path = os.path.abspath(file_path) 
+            # Skip processing if abs_file_path is in processed_files
+            if abs_file_path in processed_files:
                     print(f"Skipping {filename}. Already processed.")
                     continue
+            
+            if filename.endswith('.json'):
                 
                 # Get the file size
-                file_size = os.path.getsize(file_path)
                 
                 # Extract the organization name from the file path
                 organization_name = extract_organization_name(file_path)
