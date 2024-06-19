@@ -10,6 +10,14 @@ def process_files(directory):
     # List to store full names and additional information
     full_names_info = []
 
+    # Check if directory is empty or doesn't exist
+    if not os.path.exists(directory):
+        print(f"Error: The directory '{directory}' does not exist.")
+        return
+    if not os.listdir(directory):
+        print(f"Error: The directory '{directory}' is empty.")
+        return
+
     # Loop through all files in the directory
     for filename in os.listdir(directory):
         if filename.endswith('.json'):
@@ -26,8 +34,12 @@ def process_files(directory):
             start_time = datetime.now()
             
             with open(file_path, 'r') as file:
-                data = json.load(file)
-                
+                try:
+                    data = json.load(file)
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON in file {filename}: {e}")
+                    continue
+
                 # Extract first and last names, docket ID, and docket type
                 try:
                     first_name = data['data']['attributes']['firstName']
@@ -48,7 +60,7 @@ def process_files(directory):
             
             # Print time taken to process the file
             print(f"Time taken to process: {elapsed_time}")
-            print("Done!")
+            print("Done with file!")
 
     # Write the information to the output file
     with open(output_file, 'w') as output:
