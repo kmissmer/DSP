@@ -13,10 +13,28 @@ def extract_organization_name(file_path):
     
     return organization_name
 
+def extract_docket_name(file_path):
+    parts = file_path.split('/')
+    data_index = parts.index('data')
+    docket_name = parts[data_index + 3]
+    return docket_name
+
+def extract_file_type(file_path):
+    parts = file_path.split('/')
+    file_type = parts.index('data')
+    file_type = parts[file_type + 5]
+    return file_type
+
 def extract_year_from_docket_id(docket_id):
-    # Extract the year from the docket ID
-    year = docket_id.split('-')[1] if docket_id else "Null"
-    return year
+    # Check if docket_id is None or empty
+    if not docket_id:
+        return None
+    
+    # Extract the year from the docket_id, assuming the format is consistent
+    try:
+        return int(docket_id.split('-')[1])  # Extract the year part from the docket_id
+    except (IndexError, ValueError):
+        return None
 
 def process_files(directory):
     # Output file
@@ -64,6 +82,12 @@ def process_files(directory):
                     
                     # Get the base filename (without directories)
                     base_filename = os.path.basename(file_path)
+
+                    # Extract docket_id from the file path
+                    docket_id = extract_docket_name(file_path)
+
+                    file_type = extract_file_type(file_path)
+
                     
                     # Print file being processed and its size
                     file_size = os.path.getsize(file_path)
@@ -97,7 +121,7 @@ def process_files(directory):
                                 "filename": base_filename,  # Use base filename here
                                 "filesize": file_size,
                                 "Docket ID": docket_id,
-                                "Docket Type": docket_type,
+                                "Docket Type": file_type,
                                 "Name": full_name,
                                 "Year": year,  # Include extracted year
                                 "file_path": abs_file_path  # Add the full file path here
