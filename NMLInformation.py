@@ -37,7 +37,7 @@ def process_files(directory):
                     entry = json.loads(line.strip())
                     filepath = entry.get("filepath")
                     if filepath:
-                        processed_files.add(file_path)  # Add stored file paths to processed_files
+                        processed_files.add(filepath)  # Add stored file paths to processed_files
             except json.JSONDecodeError:
                 print(f"Error decoding JSON in {output_file_name}")
 
