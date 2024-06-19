@@ -95,14 +95,14 @@ def find_names_in_everything(directory_path, output_filename):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python3 <script_name.py> <directory_path> <output_filename>")
+        print("Usage: python3 <script_name.py> <directory_path>")
         sys.exit(1)
 
-    directory_path = sys.argv[1]
+    directory_path = sys.argv[2]
     if not os.path.isdir(directory_path):
         print(f"Error: {directory_path} is not a valid directory.")
         sys.exit(1)
 
-    output_filename = sys.argv[2]
+    output_filename = os.path.basename(directory_path) + ".txt"
 
     find_names_in_everything(directory_path, output_filename)
