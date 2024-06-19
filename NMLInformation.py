@@ -108,7 +108,7 @@ def process_files(directory):
                 print(f"Time taken to process: {elapsed_time}")
                 print("Done with file!")
 
-    print(f"Information has been written to {output_file}")
+    print(f"Information has been added to {output_file}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
