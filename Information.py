@@ -10,6 +10,18 @@ def extract_organization_name(file_path):
     organization_name = parts[data_index + 2]
     return organization_name
 
+def extract_docket_name(file_path):
+    parts = file_path.split('/')
+    data_index = parts.index('data')
+    docket_name = parts[data_index + 3]
+    return docket_name
+
+def extract_file_type(file_path):
+    parts = file_path.split('/')
+    file_type = parts.index('data')
+    file_type = parts[file_type + 5]
+    return file_type
+
 def chunk_reader(file_path, chunk_size=1000000):
     with open(file_path, 'r', errors='ignore') as file:
         while True:
@@ -83,8 +95,10 @@ def find_names_in_everything(directory_path):
 
                 if names:
                     result = {
-                        "organization": extract_organization_name(file_path),
                         "filename": base_filename,
+                        "organization": extract_organization_name(file_path),
+                        "docketID": extract_docket_name(file_path),
+                        "filetype": extract_file_type(file_path),
                         "filesize": file_size,
                         "names": names,
                         "filepath": file_path
@@ -95,8 +109,10 @@ def find_names_in_everything(directory_path):
                         text_file.write("\n")
                 else:
                     result = {
-                        "organization": extract_organization_name(file_path),
                         "filename": base_filename,
+                        "organization": extract_organization_name(file_path),
+                        "docketID": extract_docket_name(file_path),
+                        "filetype": extract_file_type(file_path),                        
                         "filesize": file_size,
                         "names": None,
                         "filepath": file_path
