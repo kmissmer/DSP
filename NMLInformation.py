@@ -14,11 +14,9 @@ def extract_organization_name(file_path):
     return organization_name
 
 def extract_year_from_docket_id(docket_id):
-    # Extract the year from the docket_id, assuming the format is consistent
-    try:
-        return int(docket_id.split('-')[1])  # Extract the year part from the docket_id
-    except (IndexError, ValueError):
-        return None
+    # Extract the year from the docket ID
+    year = docket_id.split('-')[1] if docket_id else "Null"
+    return year
 
 def process_files(directory):
     # Output file
