@@ -5,6 +5,16 @@ from datetime import datetime
 import sys
 
 
+def extract_organization_name(file_path):
+    # Split the file_path by the directory separator '/'
+    parts = file_path.split('/')
+    
+    # Find the index of the organization name
+    data_index = parts.index('data')
+    organization_name = parts[data_index + 2]  # Get the next component after 'data'
+    
+    return organization_name
+
 def chunk_reader(file_path, chunk_size=1000000):
     with open(file_path, 'r', errors='ignore') as file:
         while True:
@@ -64,30 +74,43 @@ def find_names_in_everything(directory_path):
 
                 for line in data:
                     entry = json.loads(line)
-                    filename = entry.get("filename")
-                    if filename:
-                        processed_files.add(filename)
+                    file_path = entry.get("filepath")
+                    if file_path:
+                        processed_files.add(file_path)
             except json.JSONDecodeError:
                 pass
 
     results = []
-    errors = []
 
     for root, dirs, files in os.walk(directory_path):
         for file in files:
             file_path = os.path.join(root, file)
             file_size = os.path.getsize(file_path)
 
+
             if file_path in processed_files:
                 print(f"Skipping {file_path}. Already processed.")
                 continue
 
             if file.endswith(('.htm', '.txt')):
+
+                base_filename = os.path.basename(file_path)
+
+
                 names = process_files(file_path, nlp)
+
+
                 if names:
-                    result = {"filename": file_path, "filesize": file_size, "names": names}
-                else:
-                    result = {"filename": file_path, "filesize": file_size}
+                    result = {
+                        "organization": extract_organization_name(file_path),
+                        "filename": base_filename,
+                        "filesize": file_size, 
+                        "names": names,
+                        "filepath": file_path, 
+
+                        }
+               
+
                 processed_files.add(file_path)
                 results.append(result)
 
