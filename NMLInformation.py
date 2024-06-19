@@ -31,27 +31,26 @@ def process_files(directory):
 
     # Read existing entries from output_file (NMLoutput.txt)
     if os.path.exists(output_file):
-        with open(output_file, "r") as f:
-            for line in f:
-                try:
-                    entry = json.loads(line.strip())
+        with open(output_file, "r") as output_file:
+            try:
+                data = output_file.readlines()
+
+                for line in data:
+                    entry = json.loads(line)
                     filename = entry.get("filename")
                     if filename:
-                        processed_file_path = os.path.abspath(filename)
-                        processed_files.add(processed_file_path)
-                except json.JSONDecodeError:
-                    print(f"Error decoding JSON in {output_file}")
+                        processed_files.add(filename)
+            except json.JSONDecodeError:
+                pass
 
     # Walk through all files and subdirectories in the given directory
     for root, dirs, files in os.walk(directory):
-        for filename in files:
-
-            file_path = os.path.join(root, filename)
+        for file in files:
+            file_path = os.path.join(root, file)
             file_size = os.path.getsize(file_path)
-            # Get the absolute file path
-            abs_file_path = os.path.abspath(file_path) 
+            
             # Skip processing if abs_file_path is in processed_files
-            if abs_file_path in processed_files:
+            if file_path in processed_files:
                     print(f"Skipping {filename}. Already processed.")
                     continue
             
