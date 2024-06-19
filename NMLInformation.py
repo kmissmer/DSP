@@ -18,18 +18,17 @@ def process_files(directory):
         print(f"Error: The directory '{directory}' is empty.")
         return
 
-    # Loop through all files in the directory
+    # Walk through all files and subdirectories in the given directory
     for root, dirs, files in os.walk(directory):
-
-        for filename in os.listdir(directory):
+        for filename in files:
             if filename.endswith('.json'):
-                file_path = os.path.join(directory, filename)
+                file_path = os.path.join(root, filename)
                 
                 # Get the file size
                 file_size = os.path.getsize(file_path)
                 
                 # Print file being processed and its size
-                print(f"Processing file: {filename}")
+                print(f"Processing file: {file_path}")
                 print(f"File Size: {file_size} bytes")
                 
                 # Start timer
@@ -51,7 +50,13 @@ def process_files(directory):
                         docket_id = data['data']['attributes']['docketId']
                         docket_type = data['data']['type']
                         
-                        info = f"Docket ID: {docket_id}, Docket Type: {docket_type}, File Size: {file_size} bytes, Name: {full_name}"
+                        info = {
+                            "filename": file_path,
+                            "filesize": file_size,
+                            "Docket ID": docket_id,
+                            "Docket Type": docket_type,
+                            "Name": full_name
+                        }
                         full_names_info.append(info)
                     except KeyError as e:
                         print(f"KeyError: {e} in file {filename}")
@@ -64,12 +69,12 @@ def process_files(directory):
                 print(f"Time taken to process: {elapsed_time}")
                 print("Done with file!")
 
-        # Write the information to the output file
-        with open(output_file, 'w') as output:
-            for info in full_names_info:
-                output.write(info + '\n')
+    # Write the information to the output file
+    with open(output_file, 'w') as output:
+        for info in full_names_info:
+            output.write(json.dumps(info) + '\n')
 
-        print(f"Information has been written to {output_file}")
+    print(f"Information has been written to {output_file}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
