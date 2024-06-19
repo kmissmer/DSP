@@ -62,7 +62,7 @@ def process_files(directory):
                         docket_type = data['data']['type']
                         
                         info = {
-                            "filename": organization_name,
+                            "organization": organization_name,
                             "filesize": file_size,
                             "Docket ID": docket_id,
                             "Docket Type": docket_type,
