@@ -26,11 +26,31 @@ def process_files(directory):
         print(f"Error: The directory '{directory}' is empty.")
         return
 
+    # Set to keep track of processed filenames
+    processed_files = set()
+
+    # Read existing entries from output_file (NMLoutput.txt)
+    if os.path.exists(output_file):
+        with open(output_file, "r") as f:
+            for line in f:
+                try:
+                    entry = json.loads(line.strip())
+                    filename = entry.get("filename")
+                    if filename:
+                        processed_files.add(filename)
+                except json.JSONDecodeError:
+                    print(f"Error decoding JSON in {output_file}")
+
     # Walk through all files and subdirectories in the given directory
     for root, dirs, files in os.walk(directory):
         for filename in files:
             if filename.endswith('.json'):
                 file_path = os.path.join(root, filename)
+                
+                # Skip processing if file_path is in processed_files
+                if file_path in processed_files:
+                    print(f"Skipping {filename}. Already processed.")
+                    continue
                 
                 # Get the file size
                 file_size = os.path.getsize(file_path)
@@ -59,7 +79,7 @@ def process_files(directory):
                     try:
                         first_name = data['data']['attributes']['firstName']
                         last_name = data['data']['attributes']['lastName']
-                        full_name = f"{first_name} {last_name}"
+                        full_name = f"{first_name} {last_name}" if (first_name and last_name) else "null"
                         
                         docket_id = data['data']['attributes']['docketId']
                         docket_type = data['data']['type']
@@ -70,7 +90,7 @@ def process_files(directory):
                             "filesize": file_size,
                             "Docket ID": docket_id,
                             "Docket Type": docket_type,
-                            "Name": full_name if (first_name and last_name) else "null"  # Handle null names
+                            "Name": full_name
                         }
                         
                         # Write the information to the output file immediately
