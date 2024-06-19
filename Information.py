@@ -22,6 +22,17 @@ def extract_file_type(file_path):
     file_type = parts[file_type + 5]
     return file_type
 
+def extract_year_from_docket_id(docket_id):
+    # Check if docket_id is None or empty
+    if not docket_id:
+        return None
+    
+    # Extract the year from the docket_id, assuming the format is consistent
+    try:
+        return int(docket_id.split('-')[1])  # Extract the year part from the docket_id
+    except (IndexError, ValueError):
+        return None
+
 def chunk_reader(file_path, chunk_size=1000000):
     with open(file_path, 'r', errors='ignore') as file:
         while True:
@@ -109,13 +120,14 @@ def find_names_in_everything(directory_path):
                         text_file.write("\n")
                 else:
                     result = {
-                        "filename": base_filename,
-                        "organization": extract_organization_name(file_path),
-                        "docketID": extract_docket_name(file_path),
-                        "filetype": extract_file_type(file_path),                        
-                        "filesize": file_size,
-                        "names": None,
-                        "filepath": file_path
+                        "Organization": extract_organization_name(file_path),
+                        "FileName": base_filename,
+                        "FileSize": file_size,
+                        "DocketID": extract_docket_name(file_path),
+                        "FileType": extract_file_type(file_path),            
+                        "Name": None,
+                        "Year": extract_year_from_docket_id(extract_docket_name(file_path)),
+                        "FilePath": file_path
                     }
                     results.append(result)
                     with open(output_filename, "a") as text_file:
