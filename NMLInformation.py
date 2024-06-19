@@ -115,14 +115,14 @@ def process_files(directory):
                             
                             
                             info = {
-                                "organization": organization_name,
-                                "filename": base_filename,  # Use base filename here
-                                "filesize": file_size,
-                                "Docket ID": docket_id,
-                                "Docket Type": file_type,
+                                "Organization": organization_name,
+                                "FileName": base_filename,  # Use base filename here
+                                "FileSize": file_size,
+                                "DocketID": docket_id,
+                                "FileType": file_type,
                                 "Name": full_name,
                                 "Year": year,  # Include extracted year
-                                "file_path": abs_file_path  # Add the full file path here
+                                "FilePath": abs_file_path  # Add the full file path here
                             }
                             
                             # Write the information to the output file
