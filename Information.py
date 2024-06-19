@@ -98,10 +98,7 @@ def find_names_in_everything(directory_path):
 
                 processed_files.add(file_path)
 
-    with open(output_filename, "a") as output_file:
-        for result in results:
-            output_file.write(json.dumps(result))
-            output_file.write("\n")
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
