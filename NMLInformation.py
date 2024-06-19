@@ -42,71 +42,72 @@ def process_files(directory):
             except json.JSONDecodeError:
                 print(f"Error decoding JSON in {output_file_name}")
 
-    # Walk through all files and subdirectories in the given directory
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            file_path = os.path.join(root, file)
-            file_size = os.path.getsize(file_path)
-            
-            # Skip processing if file_path is in processed_files (check absolute path)
-            abs_file_path = os.path.abspath(file_path)
-            if abs_file_path in processed_files:
-                print(f"Skipping {file}. Already processed.")
-                continue
-            
-            if file.endswith('.json'):
-                # Extract the organization name from the file path
-                organization_name = extract_organization_name(file_path)
+    # Open output file in append mode
+    with open(output_file_name, 'a') as output:
+        # Walk through all files and subdirectories in the given directory
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                file_path = os.path.join(root, file)
+                abs_file_path = os.path.abspath(file_path)
                 
-                # Get the base filename (without directories)
-                base_filename = os.path.basename(file_path)
+                # Skip processing if file_path is in processed_files (check absolute path)
+                if abs_file_path in processed_files:
+                    print(f"Skipping {file}. Already processed.")
+                    continue
                 
-                # Print file being processed and its size
-                print(f"Processing file: {base_filename}")
-                print(f"File Size: {file_size} bytes")
-                
-                # Start timer
-                start_time = datetime.now()
-                
-                with open(file_path, 'r') as file:
-                    try:
-                        data = json.load(file)
-                    except json.JSONDecodeError as e:
-                        print(f"Error decoding JSON in file {file}: {e}")
-                        continue
+                if file.endswith('.json'):
+                    # Extract the organization name from the file path
+                    organization_name = extract_organization_name(file_path)
+                    
+                    # Get the base filename (without directories)
+                    base_filename = os.path.basename(file_path)
+                    
+                    # Print file being processed and its size
+                    file_size = os.path.getsize(file_path)
+                    print(f"Processing file: {base_filename}")
+                    print(f"File Size: {file_size} bytes")
+                    
+                    # Start timer
+                    start_time = datetime.now()
+                    
+                    with open(file_path, 'r') as file:
+                        try:
+                            data = json.load(file)
+                        except json.JSONDecodeError as e:
+                            print(f"Error decoding JSON in file {file}: {e}")
+                            continue
 
-                    # Extract first and last names, docket ID, and docket type
-                    try:
-                        first_name = data['data']['attributes']['firstName']
-                        last_name = data['data']['attributes']['lastName']
-                        full_name = f"{first_name} {last_name}" if (first_name and last_name) else "null"
-                        
-                        docket_id = data['data']['attributes']['docketId']
-                        docket_type = data['data']['type']
-                        
-                        info = {
-                            "organization": organization_name,
-                            "filename": base_filename,  # Use base filename here
-                            "filesize": file_size,
-                            "Docket ID": docket_id,
-                            "Docket Type": docket_type,
-                            "Name": full_name
-                        }
-                        
-                        # Write the information to the output file immediately
-                        with open(output_file_name, 'a') as output:
+                        # Extract first and last names, docket ID, and docket type
+                        try:
+                            first_name = data['data']['attributes']['firstName']
+                            last_name = data['data']['attributes']['lastName']
+                            full_name = f"{first_name} {last_name}" if (first_name and last_name) else "null"
+                            
+                            docket_id = data['data']['attributes']['docketId']
+                            docket_type = data['data']['type']
+                            
+                            info = {
+                                "organization": organization_name,
+                                "filename": base_filename,  # Use base filename here
+                                "filesize": file_size,
+                                "Docket ID": docket_id,
+                                "Docket Type": docket_type,
+                                "Name": full_name
+                            }
+                            
+                            # Write the information to the output file
                             output.write(json.dumps(info) + '\n')
-                        
-                    except KeyError as e:
-                        print(f"KeyError: {e} in file {file}")
-                
-                # End timer and calculate elapsed time
-                end_time = datetime.now()
-                elapsed_time = end_time - start_time
-                
-                # Print time taken to process the file
-                print(f"Time taken to process: {elapsed_time}")
-                print("Done with file!")
+                            
+                        except KeyError as e:
+                            print(f"KeyError: {e} in file {file}")
+                    
+                    # End timer and calculate elapsed time
+                    end_time = datetime.now()
+                    elapsed_time = end_time - start_time
+                    
+                    # Print time taken to process the file
+                    print(f"Time taken to process: {elapsed_time}")
+                    print("Done with file!")
 
     print(f"Information has been written to {output_file_name}")
 
