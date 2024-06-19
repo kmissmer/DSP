@@ -35,10 +35,9 @@ def process_files(directory):
             try:
                 for line in f:
                     entry = json.loads(line.strip())
-                    filename = entry.get("filename")
+                    filename = entry.get("filepath")
                     if filename:
-                        processed_file_path = os.path.abspath(filename)
-                        processed_files.add(processed_file_path)
+                        processed_files.add(filename)
             except json.JSONDecodeError:
                 print(f"Error decoding JSON in {output_file_name}")
 
