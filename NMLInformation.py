@@ -16,7 +16,7 @@ def extract_organization_name(file_path):
 
 def process_files(directory):
     # Output file
-    output_file = 'NMLoutput.txt'
+    output_file_name = 'NMLoutput.txt'
 
     # Check if directory is empty or doesn't exist
     if not os.path.exists(directory):
@@ -30,8 +30,8 @@ def process_files(directory):
     processed_files = set()
 
     # Read existing entries from output_file (NMLoutput.txt)
-    if os.path.exists(output_file):
-        with open(output_file, "r") as f:
+    if os.path.exists(output_file_name):
+        with open(output_file_name, "r") as f:
             try:
                 for line in f:
                     entry = json.loads(line.strip())
@@ -40,7 +40,7 @@ def process_files(directory):
                         processed_file_path = os.path.abspath(filename)
                         processed_files.add(processed_file_path)
             except json.JSONDecodeError:
-                print(f"Error decoding JSON in {output_file}")
+                print(f"Error decoding JSON in {output_file_name}")
 
     # Walk through all files and subdirectories in the given directory
     for root, dirs, files in os.walk(directory):
@@ -94,7 +94,7 @@ def process_files(directory):
                         }
                         
                         # Write the information to the output file immediately
-                        with open(output_file, 'a') as output:
+                        with open(output_file_name, 'a') as output:
                             output.write(json.dumps(info) + '\n')
                         
                     except KeyError as e:
@@ -108,7 +108,7 @@ def process_files(directory):
                 print(f"Time taken to process: {elapsed_time}")
                 print("Done with file!")
 
-    print(f"Information has been written to {output_file}")
+    print(f"Information has been written to {output_file_name}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
