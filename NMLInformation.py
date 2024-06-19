@@ -31,17 +31,16 @@ def process_files(directory):
 
     # Read existing entries from output_file (NMLoutput.txt)
     if os.path.exists(output_file):
-        with open(output_file, "r") as output_file:
+        with open(output_file, "r") as f:
             try:
-                data = output_file.readlines()
-
-                for line in data:
-                    entry = json.loads(line)
+                for line in f:
+                    entry = json.loads(line.strip())
                     filename = entry.get("filename")
                     if filename:
-                        processed_files.add(filename)
+                        processed_file_path = os.path.abspath(filename)
+                        processed_files.add(processed_file_path)
             except json.JSONDecodeError:
-                pass
+                print(f"Error decoding JSON in {output_file}")
 
     # Walk through all files and subdirectories in the given directory
     for root, dirs, files in os.walk(directory):
@@ -49,15 +48,13 @@ def process_files(directory):
             file_path = os.path.join(root, file)
             file_size = os.path.getsize(file_path)
             
-            # Skip processing if abs_file_path is in processed_files
-            if file_path in processed_files:
-                    print(f"Skipping {filename}. Already processed.")
-                    continue
+            # Skip processing if file_path is in processed_files (check absolute path)
+            abs_file_path = os.path.abspath(file_path)
+            if abs_file_path in processed_files:
+                print(f"Skipping {file}. Already processed.")
+                continue
             
-            if filename.endswith('.json'):
-                
-                # Get the file size
-                
+            if file.endswith('.json'):
                 # Extract the organization name from the file path
                 organization_name = extract_organization_name(file_path)
                 
@@ -75,7 +72,7 @@ def process_files(directory):
                     try:
                         data = json.load(file)
                     except json.JSONDecodeError as e:
-                        print(f"Error decoding JSON in file {filename}: {e}")
+                        print(f"Error decoding JSON in file {file}: {e}")
                         continue
 
                     # Extract first and last names, docket ID, and docket type
@@ -101,7 +98,7 @@ def process_files(directory):
                             output.write(json.dumps(info) + '\n')
                         
                     except KeyError as e:
-                        print(f"KeyError: {e} in file {filename}")
+                        print(f"KeyError: {e} in file {file}")
                 
                 # End timer and calculate elapsed time
                 end_time = datetime.now()
