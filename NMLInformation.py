@@ -38,8 +38,11 @@ def process_files(directory):
                 # Extract the organization name from the file path
                 organization_name = extract_organization_name(file_path)
                 
+                # Get the base filename (without directories)
+                base_filename = os.path.basename(file_path)
+                
                 # Print file being processed and its size
-                print(f"Processing file: {organization_name}")
+                print(f"Processing file: {base_filename}")
                 print(f"File Size: {file_size} bytes")
                 
                 # Start timer
@@ -63,10 +66,11 @@ def process_files(directory):
                         
                         info = {
                             "organization": organization_name,
+                            "filename": base_filename,  # Use base filename here
                             "filesize": file_size,
                             "Docket ID": docket_id,
                             "Docket Type": docket_type,
-                            "Name": full_name
+                            "Name": full_name if (first_name and last_name) else "null"  # Handle null names
                         }
                         
                         # Write the information to the output file immediately
