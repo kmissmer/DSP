@@ -7,9 +7,6 @@ def process_files(directory):
     # Output file
     output_file = 'NMLoutput.txt'
 
-    # List to store full names and additional information
-    full_names_info = []
-
     # Check if directory is empty or doesn't exist
     if not os.path.exists(directory):
         print(f"Error: The directory '{directory}' does not exist.")
@@ -57,7 +54,11 @@ def process_files(directory):
                             "Docket Type": docket_type,
                             "Name": full_name
                         }
-                        full_names_info.append(info)
+                        
+                        # Write the information to the output file immediately
+                        with open(output_file, 'a') as output:
+                            output.write(json.dumps(info) + '\n')
+                        
                     except KeyError as e:
                         print(f"KeyError: {e} in file {filename}")
                 
@@ -68,11 +69,6 @@ def process_files(directory):
                 # Print time taken to process the file
                 print(f"Time taken to process: {elapsed_time}")
                 print("Done with file!")
-
-    # Write the information to the output file
-    with open(output_file, 'w') as output:
-        for info in full_names_info:
-            output.write(json.dumps(info) + '\n')
 
     print(f"Information has been written to {output_file}")
 
