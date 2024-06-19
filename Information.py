@@ -94,7 +94,13 @@ def find_names_in_everything(directory_path):
                         text_file.write(json.dumps(result))
                         text_file.write("\n")
                 else:
-                    print(f"No names extracted from {file_path}")
+                    result = {
+                        "organization": extract_organization_name(file_path),
+                        "filename": base_filename,
+                        "filesize": file_size,
+                        "names": None,
+                        "filepath": file_path
+                    }
 
                 processed_files.add(file_path)
 
