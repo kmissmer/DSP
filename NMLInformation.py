@@ -13,6 +13,12 @@ def extract_organization_name(file_path):
     
     return organization_name
 
+def extract_year_from_docket_id(docket_id):
+    # Extract the year from the docket_id, assuming the format is consistent
+    try:
+        return int(docket_id.split('-')[1])  # Extract the year part from the docket_id
+    except (IndexError, ValueError):
+        return None
 
 def process_files(directory):
     # Output file
@@ -85,6 +91,9 @@ def process_files(directory):
                             docket_id = data['data']['attributes'].get('docketId', None)
                             docket_type = data['data'].get('type', None)
                             
+                            # Extract year from docket_id
+                            year = extract_year_from_docket_id(docket_id)
+                            
                             info = {
                                 "organization": organization_name,
                                 "filename": base_filename,  # Use base filename here
@@ -92,6 +101,7 @@ def process_files(directory):
                                 "Docket ID": docket_id,
                                 "Docket Type": docket_type,
                                 "Name": full_name,
+                                "Year": year,  # Include extracted year
                                 "file_path": abs_file_path  # Add the full file path here
                             }
                             
