@@ -83,8 +83,8 @@ def process_files(directory):
                             last_name = data['data']['attributes'].get('lastName', None)
                             full_name = f"{first_name} {last_name}" if (first_name and last_name) else "Null"
                             
-                            docket_id = data['data']['attributes']['docketId']
-                            docket_type = data['data']['type']
+                            docket_id = data['data']['attributes'].get('docketId', None)
+                            docket_type = data['data'].get('type', None)
                             
                             info = {
                                 "organization": organization_name,
