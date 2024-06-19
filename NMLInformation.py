@@ -36,9 +36,9 @@ def process_files(directory):
                 for line in f:
                     entry = json.loads(line.strip())
                     filename = entry.get("filename")
-                    if filename:
-                        processed_file_path = os.path.abspath(filename)
-                        processed_files.add(processed_file_path)
+                    file_path = entry.get("file_path")  # Read stored file paths
+                    if filename and file_path:
+                        processed_files.add(file_path)  # Add stored file paths to processed_files
             except json.JSONDecodeError:
                 print(f"Error decoding JSON in {output_file_name}")
 
@@ -92,7 +92,8 @@ def process_files(directory):
                                 "filesize": file_size,
                                 "Docket ID": docket_id,
                                 "Docket Type": docket_type,
-                                "Name": full_name
+                                "Name": full_name,
+                                "file_path": abs_file_path  # Add the full file path here
                             }
                             
                             # Write the information to the output file
