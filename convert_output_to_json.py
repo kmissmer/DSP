@@ -10,8 +10,11 @@ def convert_output_to_json(input_file):
 
     output_data = []
     for line in data:
-        entry = eval(line.strip())  # Convert string to dictionary
-        output_data.append(entry)
+        try:
+            entry = json.loads(line.strip())  # Convert JSON string to dictionary
+            output_data.append(entry)
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON in line: {line.strip()}\nError message: {e}")
 
     with open(output_file, 'w') as f:
         json.dump(output_data, f, indent=4)
