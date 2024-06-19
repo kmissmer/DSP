@@ -35,9 +35,10 @@ def process_files(directory):
             try:
                 for line in f:
                     entry = json.loads(line.strip())
-                    filepath = entry.get("filepath")
-                    if filepath:
-                        processed_files.add(filepath)  # Add stored file paths to processed_files
+                    filename = entry.get("filename")
+                    if filename:
+                        processed_file_path = os.path.abspath(filename)
+                        processed_files.add(processed_file_path)
             except json.JSONDecodeError:
                 print(f"Error decoding JSON in {output_file_name}")
 
@@ -78,9 +79,9 @@ def process_files(directory):
 
                         # Extract first and last names, docket ID, and docket type
                         try:
-                            first_name = data['data']['attributes']['firstName']
-                            last_name = data['data']['attributes']['lastName']
-                            full_name = f"{first_name} {last_name}" if (first_name and last_name) else "null"
+                            first_name = data['data']['attributes'].get('firstName', None)
+                            last_name = data['data']['attributes'].get('lastName', None)
+                            full_name = f"{first_name} {last_name}" if (first_name and last_name) else "Null"
                             
                             docket_id = data['data']['attributes']['docketId']
                             docket_type = data['data']['type']
@@ -92,7 +93,7 @@ def process_files(directory):
                                 "Docket ID": docket_id,
                                 "Docket Type": docket_type,
                                 "Name": full_name,
-                                "filepath": abs_file_path  # Add the full file path here
+                                "file_path": abs_file_path  # Add the full file path here
                             }
                             
                             # Write the information to the output file
