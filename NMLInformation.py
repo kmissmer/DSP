@@ -88,6 +88,8 @@ def process_files(directory):
 
                     file_type = extract_file_type(file_path)
 
+                    # Extract year from docket_id
+                    year = extract_year_from_docket_id(docket_id)
                     
                     # Print file being processed and its size
                     file_size = os.path.getsize(file_path)
@@ -109,12 +111,8 @@ def process_files(directory):
                             first_name = data['data']['attributes'].get('firstName', None)
                             last_name = data['data']['attributes'].get('lastName', None)
                             full_name = f"{first_name} {last_name}" if (first_name and last_name) else "Null"
+                                                        
                             
-                            docket_id = data['data']['attributes'].get('docketId', None)
-                            docket_type = data['data'].get('type', None)
-                            
-                            # Extract year from docket_id
-                            year = extract_year_from_docket_id(docket_id)
                             
                             info = {
                                 "organization": organization_name,
