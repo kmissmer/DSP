@@ -3,6 +3,17 @@ import json
 from datetime import datetime
 import sys
 
+def extract_organization_name(file_path):
+    # Split the file_path by the directory separator '/'
+    parts = file_path.split('/')
+    
+    # Find the index of the organization name
+    data_index = parts.index('data')
+    organization_name = parts[data_index + 1]  # Get the next component after 'data'
+    
+    return organization_name
+
+
 def process_files(directory):
     # Output file
     output_file = 'NMLoutput.txt'
@@ -24,8 +35,11 @@ def process_files(directory):
                 # Get the file size
                 file_size = os.path.getsize(file_path)
                 
+                # Extract the organization name from the file path
+                organization_name = extract_organization_name(file_path)
+                
                 # Print file being processed and its size
-                print(f"Processing file: {file_path}")
+                print(f"Processing file: {organization_name}")
                 print(f"File Size: {file_size} bytes")
                 
                 # Start timer
@@ -48,7 +62,7 @@ def process_files(directory):
                         docket_type = data['data']['type']
                         
                         info = {
-                            "filename": file_path,
+                            "filename": organization_name,
                             "filesize": file_size,
                             "Docket ID": docket_id,
                             "Docket Type": docket_type,
