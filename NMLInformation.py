@@ -26,7 +26,7 @@ def process_files(directory):
         print(f"Error: The directory '{directory}' is empty.")
         return
 
-    # Set to keep track of processed filenames
+    # Set to keep track of processed file absolute paths
     processed_files = set()
 
     # Read existing entries from output_file (NMLoutput.txt)
@@ -37,7 +37,8 @@ def process_files(directory):
                     entry = json.loads(line.strip())
                     filename = entry.get("filename")
                     if filename:
-                        processed_files.add(filename)
+                        processed_file_path = os.path.abspath(filename)
+                        processed_files.add(processed_file_path)
                 except json.JSONDecodeError:
                     print(f"Error decoding JSON in {output_file}")
 
@@ -47,8 +48,11 @@ def process_files(directory):
             if filename.endswith('.json'):
                 file_path = os.path.join(root, filename)
                 
-                # Skip processing if file_path is in processed_files
-                if file_path in processed_files:
+                # Get the absolute file path
+                abs_file_path = os.path.abspath(file_path)
+                
+                # Skip processing if abs_file_path is in processed_files
+                if abs_file_path in processed_files:
                     print(f"Skipping {filename}. Already processed.")
                     continue
                 
@@ -108,7 +112,7 @@ def process_files(directory):
                 print(f"Time taken to process: {elapsed_time}")
                 print("Done with file!")
 
-    print(f"Information has been added to {output_file}")
+    print(f"Information has been written to {output_file}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
