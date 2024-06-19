@@ -9,7 +9,7 @@ def extract_organization_name(file_path):
     
     # Find the index of the organization name
     data_index = parts.index('data')
-    organization_name = parts[data_index + 1]  # Get the next component after 'data'
+    organization_name = parts[data_index + 2]  # Get the next component after 'data'
     
     return organization_name
 
