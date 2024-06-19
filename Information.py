@@ -101,6 +101,10 @@ def find_names_in_everything(directory_path):
                         "names": None,
                         "filepath": file_path
                     }
+                    results.append(result)
+                    with open(output_filename, "a") as text_file:
+                        text_file.write(json.dumps(result))
+                        text_file.write("\n")
 
                 processed_files.add(file_path)
 
