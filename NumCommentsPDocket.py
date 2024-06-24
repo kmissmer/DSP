@@ -23,6 +23,11 @@ def count_files_per_docket(directory_path):
 
     return top_50_dockets
 
+def write_to_file(top_50_dockets, output_file):
+    with open(output_file, 'w') as f:
+        for i, (docket_id, count) in enumerate(top_50_dockets, start=1):
+            f.write(f"{i}. Docket - {docket_id}: {count} files\n")
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python3 NumFilesPerDocket.py <directory_path>")
@@ -30,6 +35,8 @@ if __name__ == "__main__":
         directory_path = sys.argv[1]
         top_50_dockets = count_files_per_docket(directory_path)
 
-        # Display the top 50 dockets with their file counts
-        for i, (docket_id, count) in enumerate(top_50_dockets, start=1):
-            print(f"{i}. Docket - {docket_id}: {count} files")
+        # Write the top 50 dockets with their file counts to a file
+        output_file = "dockets.txt"
+        write_to_file(top_50_dockets, output_file)
+
+        print(f"Results written to {output_file}")
