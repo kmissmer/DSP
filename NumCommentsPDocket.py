@@ -1,6 +1,6 @@
 import json
 import os
-import pandas as pd
+import sys
 from bs4 import BeautifulSoup
 
 def extract_year_from_docket_id(docket_id):
@@ -86,5 +86,8 @@ def process_dockets(directory_path):
         print(f"{i}. Docket ID: {docket['docket_id']}, Comments: {docket['comments']}")
 
 if __name__ == "__main__":
-    directory_path = "path_to_your_DSP_folder"  # Replace with your DSP folder path
-    process_dockets(directory_path)
+    if len(sys.argv) != 2:
+        print("Usage: python3 NumCommentsPDocket.py <directory_path>")
+    else:
+        directory_path = sys.argv[1]
+        process_dockets(directory_path)
