@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 
 def count_files_per_docket(directory_path):
     file_counts = {}
@@ -33,6 +34,8 @@ if __name__ == "__main__":
         print("Usage: python3 NumFilesPerDocket.py <directory_path>")
     else:
         directory_path = sys.argv[1]
+        print(f"Starting processing at {datetime.now()}...")
+
         top_50_dockets = count_files_per_docket(directory_path)
 
         # Write the top 50 dockets with their file counts to a file
