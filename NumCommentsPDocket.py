@@ -11,43 +11,59 @@ def extract_year_from_docket_id(docket_id):
     except (IndexError, ValueError):
         return None
 
-def process_json_file(file_path):
-    with open(file_path, 'r') as json_file:
-        dockets = json.load(json_file)
-        if isinstance(dockets, list):
-            return dockets
+def process_json_file(file_path, docket_id):
+    try:
+        with open(file_path, 'r') as json_file:
+            comments = json.load(json_file)
+            if isinstance(comments, int):
+                return {"docket_id": docket_id, "comments": comments}
+            elif isinstance(comments, list) or isinstance(comments, dict):
+                comments_count = len(comments)
+                return {"docket_id": docket_id, "comments": comments_count}
+            else:
+                print(f"Invalid JSON format in file: {file_path}")
+                return None
+    except Exception as e:
+        print(f"An error occurred while processing JSON file {file_path}: {e}")
+        return None
+
+def process_txt_file(file_path, docket_id):
+    try:
+        with open(file_path, 'r') as txt_file:
+            lines = txt_file.readlines()
+            comments_count = len(lines)
+            return {"docket_id": docket_id, "comments": comments_count}
+    except Exception as e:
+        print(f"An error occurred while processing TXT file {file_path}: {e}")
+        return None
+
+def process_htm_file(file_path, docket_id):
+    try:
+        with open(file_path, 'r') as htm_file:
+            soup = BeautifulSoup(htm_file, 'html.parser')
+            rows = soup.find_all('tr')
+            comments_count = len(rows) - 1  # Assuming the first row is the header
+            return {"docket_id": docket_id, "comments": comments_count}
+    except Exception as e:
+        print(f"An error occurred while processing HTML file {file_path}: {e}")
+        return None
+
+def process_file(file_path):
+    path_components = file_path.split(os.sep)
+    if len(path_components) >= 4:
+        docket_id = path_components[3]
+        if file_path.endswith(".json"):
+            return process_json_file(file_path, docket_id)
+        elif file_path.endswith(".txt"):
+            return process_txt_file(file_path, docket_id)
+        elif file_path.endswith(".htm") or file_path.endswith(".html"):
+            return process_htm_file(file_path, docket_id)
         else:
-            print(f"Invalid JSON format in file: {file_path}")
-            return []
-
-def process_txt_file(file_path):
-    dockets = []
-    with open(file_path, 'r') as txt_file:
-        lines = txt_file.readlines()
-        for line in lines:
-            try:
-                docket_id, comments = line.strip().split(',')
-                comments = int(comments)
-                dockets.append({"docket_id": docket_id, "comments": comments})
-            except ValueError:
-                print(f"Invalid line format in file: {file_path}")
-    return dockets
-
-def process_htm_file(file_path):
-    dockets = []
-    with open(file_path, 'r') as htm_file:
-        soup = BeautifulSoup(htm_file, 'html.parser')
-        rows = soup.find_all('tr')
-        for row in rows:
-            cols = row.find_all('td')
-            if len(cols) == 2:
-                docket_id = cols[0].text.strip()
-                try:
-                    comments = int(cols[1].text.strip())
-                    dockets.append({"docket_id": docket_id, "comments": comments})
-                except ValueError:
-                    print(f"Invalid comment number in file: {file_path}")
-    return dockets
+            print(f"Unsupported file type: {file_path}")
+            return None
+    else:
+        print(f"Invalid file path format: {file_path}")
+        return None
 
 def process_dockets(directory_path):
     all_dockets = []
@@ -56,21 +72,9 @@ def process_dockets(directory_path):
     for root, _, files in os.walk(directory_path):
         for file in files:
             file_path = os.path.join(root, file)
-            if file.endswith(".json"):
-                try:
-                    all_dockets.extend(process_json_file(file_path))
-                except Exception as e:
-                    print(f"An error occurred while processing JSON file {file_path}: {e}")
-            elif file.endswith(".txt"):
-                try:
-                    all_dockets.extend(process_txt_file(file_path))
-                except Exception as e:
-                    print(f"An error occurred while processing TXT file {file_path}: {e}")
-            elif file.endswith(".htm") or file.endswith(".html"):
-                try:
-                    all_dockets.extend(process_htm_file(file_path))
-                except Exception as e:
-                    print(f"An error occurred while processing HTML file {file_path}: {e}")
+            docket_info = process_file(file_path)
+            if docket_info:
+                all_dockets.append(docket_info)
     
     # Filter dockets from 2024
     dockets_2024 = [docket for docket in all_dockets if extract_year_from_docket_id(docket['docket_id']) == 2024]
