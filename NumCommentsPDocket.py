@@ -37,7 +37,6 @@ def count_files_per_docket(directory_path):
 
     return output_list[:50]
 
-
 def write_to_file(output_list, output_file):
     with open(output_file, 'w') as f:
         for line in output_list:
@@ -47,7 +46,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python3 NumFilesPerDocket.py <directory_path>")
     else:
-        directory_path = sys.argv[1]
+        directory_path = os.path.join(sys.argv[1], "ORG")  # Adjust to start at /data/data/ORG
         print(f"Starting processing at {datetime.now()}...")
 
         output_list = count_files_per_docket(directory_path)
