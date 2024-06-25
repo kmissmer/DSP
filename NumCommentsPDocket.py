@@ -33,9 +33,10 @@ def count_files_per_docket(directory_path):
         output_list.append(f"{docket_name} - {count} files")
 
     # Sort by file count in descending order
-    output_list.sort(key=lambda x: int(x.split(" - ")[1]), reverse=True)
+    output_list.sort(key=lambda x: int(x.split(" - ")[1].split()[0]), reverse=True)  # Adjusted key function here
 
     return output_list[:50]
+
 
 def write_to_file(output_list, output_file):
     with open(output_file, 'w') as f:
