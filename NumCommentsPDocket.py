@@ -15,11 +15,12 @@ def count_files_per_docket(directory_path):
     for root, _, files in os.walk(directory_path):
         for file in files:
             file_path = os.path.join(root, file)
-            # Get the docket name from the path relative to directory_path
+            # Get the relative path from directory_path
             rel_path = os.path.relpath(file_path, directory_path)
             path_components = rel_path.split(os.sep)
             if len(path_components) > 1:
-                docket_name = path_components[0]
+                # Adjust index to get the correct docket name
+                docket_name = path_components[0]  # This assumes the docket name is the first directory
                 year = extract_year_from_docket_id(docket_name)
                 if year == 2024:
                     if docket_name not in file_counts:
@@ -37,6 +38,7 @@ def count_files_per_docket(directory_path):
 
     return output_list[:50]
 
+
 def write_to_file(output_list, output_file):
     with open(output_file, 'w') as f:
         for line in output_list:
@@ -46,7 +48,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python3 NumFilesPerDocket.py <directory_path>")
     else:
-        directory_path = os.path.join(sys.argv[1], "ORG")  # Adjust to start at /data/data/ORG
+        directory_path = sys.argv[1]
         print(f"Starting processing at {datetime.now()}...")
 
         output_list = count_files_per_docket(directory_path)
