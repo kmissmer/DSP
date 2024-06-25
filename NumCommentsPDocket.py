@@ -8,40 +8,31 @@ def extract_year_from_docket_id(docket_id):
     except (IndexError, ValueError):
         return None
 
-def count_files_per_docket(directory_path):
+def count_files_per_docket(directory_path, output_file):
     file_counts = {}
 
-    # Walk through the directory and subdirectories
-    for root, _, files in os.walk(directory_path):
-        for file in files:
-            file_path = os.path.join(root, file)
-            # Get the relative path from directory_path
-            rel_path = os.path.relpath(file_path, directory_path)
-            path_components = rel_path.split(os.sep)
-            if len(path_components) > 1:
-                # Adjust index to get the correct docket name
-                docket_name = path_components[1]  # This assumes the docket name is the second directory after /data/data
-                year = extract_year_from_docket_id(docket_name)
-                if year == 2024:
-                    if docket_name not in file_counts:
-                        file_counts[docket_name] = 0
-                    if file.endswith(".txt") or file.endswith(".htm") or file.endswith(".html") or file.endswith(".json"):
-                        file_counts[docket_name] += 1
+    # Open the output file for appending
+    with open(output_file, 'a') as f:
+        # Walk through the directory and subdirectories
+        for root, _, files in os.walk(directory_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                # Get the relative path from directory_path
+                rel_path = os.path.relpath(file_path, directory_path)
+                path_components = rel_path.split(os.sep)
+                if len(path_components) > 1:
+                    # Adjust index to get the correct docket name
+                    docket_name = path_components[1]  # This assumes the docket name is the second directory after /data/data
+                    year = extract_year_from_docket_id(docket_name)
+                    if year == 2024:
+                        if docket_name not in file_counts:
+                            file_counts[docket_name] = 0
+                        if file.endswith(".txt") or file.endswith(".htm") or file.endswith(".html") or file.endswith(".json"):
+                            file_counts[docket_name] += 1
+                            # Write the current count to the output file
+                            f.write(f"{docket_name} - {file_counts[docket_name]} files\n")
     
-    # Convert to the required output format
-    output_list = []
-    for docket_name, count in file_counts.items():
-        output_list.append(f"{docket_name} - {count} files")
-
-    # Sort by file count in descending order
-    output_list.sort(key=lambda x: int(x.split(" - ")[1]), reverse=True)
-
-    return output_list[:50]
-
-def write_to_file(output_list, output_file):
-    with open(output_file, 'w') as f:
-        for line in output_list:
-            f.write(f"{line}\n")
+    return file_counts
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -50,10 +41,13 @@ if __name__ == "__main__":
         directory_path = sys.argv[1]
         print(f"Starting processing at {datetime.now()}...")
 
-        output_list = count_files_per_docket(directory_path)
-
-        # Write the dockets with their file counts to a file
+        # Output file
         output_file = "dockets.txt"
-        write_to_file(output_list, output_file)
+
+        # Ensure the output file is empty before starting
+        open(output_file, 'w').close()
+
+        # Process the files and write counts as they are processed
+        count_files_per_docket(directory_path, output_file)
 
         print(f"Results written to {output_file}")
