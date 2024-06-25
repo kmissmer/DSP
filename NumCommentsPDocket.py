@@ -20,7 +20,7 @@ def count_files_per_docket(directory_path):
             path_components = rel_path.split(os.sep)
             if len(path_components) > 1:
                 # Adjust index to get the correct docket name
-                docket_name = path_components[0]  # This assumes the docket name is the first directory
+                docket_name = path_components[1]  # This assumes the docket name is the second directory after /data/data
                 year = extract_year_from_docket_id(docket_name)
                 if year == 2024:
                     if docket_name not in file_counts:
@@ -34,10 +34,9 @@ def count_files_per_docket(directory_path):
         output_list.append(f"{docket_name} - {count} files")
 
     # Sort by file count in descending order
-    output_list.sort(key=lambda x: int(x.split(" - ")[1].split()[0]), reverse=True)  # Adjusted key function here
+    output_list.sort(key=lambda x: int(x.split(" - ")[1]), reverse=True)
 
     return output_list[:50]
-
 
 def write_to_file(output_list, output_file):
     with open(output_file, 'w') as f:
