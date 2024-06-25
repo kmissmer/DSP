@@ -29,4 +29,4 @@ if __name__ == "__main__":
         output_file = sys.argv[2]
 
         get_top_dockets(input_file, output_file)
-        print(f"Top {top_n} dockets written to {output_file}")
+        print(f"Results written to {output_file}")
