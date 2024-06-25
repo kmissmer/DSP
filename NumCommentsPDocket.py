@@ -2,6 +2,12 @@ import os
 import sys
 from datetime import datetime
 
+def extract_year_from_docket_id(docket_id):
+    try:
+        return int(docket_id.split('-')[1])  # Extract the year part from the docket_id
+    except (IndexError, ValueError):
+        return None
+
 def count_files_per_docket(directory_path):
     file_counts = {}
 
@@ -10,8 +16,8 @@ def count_files_per_docket(directory_path):
         for file in files:
             file_path = os.path.join(root, file)
             docket_id = os.path.basename(root)
-            file_ext = os.path.splitext(file_path)[1].lower()
-            if file_ext in ['.json', '.txt', '.htm', '.html']:
+            year = extract_year_from_docket_id(docket_id)
+            if year == 2024:
                 if docket_id not in file_counts:
                     file_counts[docket_id] = 0
                 file_counts[docket_id] += 1
@@ -19,15 +25,12 @@ def count_files_per_docket(directory_path):
     # Sort dockets by the number of files in descending order
     sorted_dockets = sorted(file_counts.items(), key=lambda x: x[1], reverse=True)
 
-    # Get the top 50 dockets
-    top_50_dockets = sorted_dockets[:50]
-
-    return top_50_dockets
+    return sorted_dockets[:50]
 
 def write_to_file(top_50_dockets, output_file):
     with open(output_file, 'w') as f:
         for i, (docket_id, count) in enumerate(top_50_dockets, start=1):
-            f.write(f"{i}. Docket - {docket_id}: {count} files\n")
+            f.write(f"{docket_id} - {count} files\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
