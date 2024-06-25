@@ -19,18 +19,28 @@ def count_files_per_docket(directory_path):
             year = extract_year_from_docket_id(docket_id)
             if year == 2024:
                 if docket_id not in file_counts:
-                    file_counts[docket_id] = 0
-                file_counts[docket_id] += 1
+                    file_counts[docket_id] = {"txt": 0, "htm": 0, "json": 0}
+                if file.endswith(".txt"):
+                    file_counts[docket_id]["txt"] += 1
+                elif file.endswith(".htm") or file.endswith(".html"):
+                    file_counts[docket_id]["htm"] += 1
+                elif file.endswith(".json"):
+                    file_counts[docket_id]["json"] += 1
     
-    # Sort dockets by the number of files in descending order
-    sorted_dockets = sorted(file_counts.items(), key=lambda x: x[1], reverse=True)
+    # Convert to the required output format
+    output_list = []
+    for docket_id, counts in file_counts.items():
+        txt_count = counts.get("txt", 0)
+        htm_count = counts.get("htm", 0)
+        json_count = counts.get("json", 0)
+        output_list.append(f"{docket_id} - {txt_count} txt, {htm_count} htm, {json_count} json")
 
-    return sorted_dockets[:50]
+    return output_list
 
-def write_to_file(top_50_dockets, output_file):
+def write_to_file(output_list, output_file):
     with open(output_file, 'w') as f:
-        for i, (docket_id, count) in enumerate(top_50_dockets, start=1):
-            f.write(f"{docket_id} - {count} files\n")
+        for line in output_list:
+            f.write(f"{line}\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -39,10 +49,10 @@ if __name__ == "__main__":
         directory_path = sys.argv[1]
         print(f"Starting processing at {datetime.now()}...")
 
-        top_50_dockets = count_files_per_docket(directory_path)
+        output_list = count_files_per_docket(directory_path)
 
-        # Write the top 50 dockets with their file counts to a file
+        # Write the dockets with their file counts to a file
         output_file = "dockets.txt"
-        write_to_file(top_50_dockets, output_file)
+        write_to_file(output_list, output_file)
 
         print(f"Results written to {output_file}")
