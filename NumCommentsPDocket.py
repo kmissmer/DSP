@@ -27,7 +27,7 @@ def count_files_per_docket(directory_path, output_file):
                     if year == 2024:
                         if docket_name not in file_counts:
                             file_counts[docket_name] = 0
-                        if file.endswith(".txt") or file.endswith(".htm") or file.endswith(".html") or file.endswith(".json"):
+                        if file.endswith(".json"):
                             file_counts[docket_name] += 1
                             # Write the current total count to the output file
                             f.write(f"{docket_name} - {file_counts[docket_name]} files\n")
