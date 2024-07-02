@@ -19,7 +19,7 @@ def get_top_dockets(input_file, output_file, top_n=50):
     # Write the top dockets to the output file
     with open(output_file, 'w') as f:
         for i, (docket_name, count) in enumerate(top_dockets, 1):
-            f.write(f"{i}. {docket_name} - {count} files\n")
+            f.write(f"{i}. {docket_name} - {count} Comments\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
