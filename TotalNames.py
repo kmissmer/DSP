@@ -20,8 +20,14 @@ except json.JSONDecodeError:
 total_names = 0
 
 for entry in data:
-    names = entry.get('names') or entry.get('Name')
-    if names is not None:
-        total_names += len(names)
+    # Check if 'names' is a list and count its elements if it's not None
+    names_list = entry.get('names')
+    if names_list is not None:
+        total_names += len(names_list)
+
+    # Check if 'Name' is a non-null string
+    name_string = entry.get('Name')
+    if name_string and name_string.lower() != 'null':
+        total_names += 1
 
 print("Total number of names:", total_names)
