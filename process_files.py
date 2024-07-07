@@ -23,6 +23,8 @@ def process_file(input_file_path, output_file_path):
         else:
             if item['names']:
                 item['name'] = item['names'][0]
+            else:
+                item['name'] = None
             new_item = OrderedDict()
             new_item['organization'] = item['organization']
             new_item['filename'] = item['filename']
