@@ -112,6 +112,7 @@ def find_names_in_everything(directory_path):
                         "filetype": extract_file_type(file_path),
                         "filesize": file_size,
                         "names": names,
+                        "year": extract_year_from_docket_id(extract_docket_name(file_path)),
                         "filepath": file_path
                     }
                     results.append(result)
