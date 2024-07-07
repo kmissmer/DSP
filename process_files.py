@@ -1,8 +1,7 @@
 import json
-import os
 import sys
 
-def process_file(input_file_path, output_dir):
+def process_file(input_file_path, output_file_path):
     # Load the input JSON file
     with open(input_file_path, 'r') as file:
         data = json.load(file)
@@ -23,24 +22,18 @@ def process_file(input_file_path, output_dir):
             del item['names']
             processed_data.append(item)
 
-    # Create output directory if it doesn't exist
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    # Output the processed data to a new JSON file
+    with open(output_file_path, 'w') as file:
+        json.dump(processed_data, file, indent=4)
 
-    # Output each processed item to a new JSON file
-    for i, item in enumerate(processed_data):
-        output_file_path = os.path.join(output_dir, f'output_{i+1}.json')
-        with open(output_file_path, 'w') as file:
-            json.dump(item, file, indent=4)
-
-    print(f'Processed {len(processed_data)} items and saved them in the "{output_dir}" directory.')
+    print(f'Processed data and saved it in "{output_file_path}".')
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python3 process_files.py InputFile OutputDir")
+        print("Usage: python3 process_files.py InputFile OutputFile")
         sys.exit(1)
 
     input_file_path = sys.argv[1]
-    output_dir = sys.argv[2]
+    output_file_path = sys.argv[2]
 
-    process_file(input_file_path, output_dir)
+    process_file(input_file_path, output_file_path)
