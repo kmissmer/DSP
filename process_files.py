@@ -1,5 +1,6 @@
 import json
 import sys
+from collections import OrderedDict
 
 def process_file(input_file_path, output_file_path):
     # Load the input JSON file
@@ -12,15 +13,23 @@ def process_file(input_file_path, output_file_path):
     for item in data:
         if item['names'] is not None and len(item['names']) > 1:
             for name in item['names']:
-                new_item = item.copy()
+                new_item = OrderedDict()
+                new_item['organization'] = item['organization']
+                new_item['filename'] = item['filename']
+                new_item['filesize'] = item['filesize']
                 new_item['name'] = name
-                del new_item['names']
+                new_item['filepath'] = item['filepath']
                 processed_data.append(new_item)
         else:
             if item['names']:
                 item['name'] = item['names'][0]
-            del item['names']
-            processed_data.append(item)
+            new_item = OrderedDict()
+            new_item['organization'] = item['organization']
+            new_item['filename'] = item['filename']
+            new_item['filesize'] = item['filesize']
+            new_item['name'] = item['name']
+            new_item['filepath'] = item['filepath']
+            processed_data.append(new_item)
 
     # Output the processed data to a new JSON file
     with open(output_file_path, 'w') as file:
