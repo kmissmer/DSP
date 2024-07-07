@@ -11,6 +11,10 @@ def process_file(input_file_path, output_file_path):
     processed_data = []
 
     for item in data:
+        # Check if the required fields exist, if not, skip this item
+        if not all(key in item for key in ['filename', 'organization', 'docketID', 'filetype', 'filesize', 'filepath']):
+            continue
+        
         if 'names' in item and item['names'] is not None:
             for name in item['names']:
                 new_item = OrderedDict()
@@ -47,4 +51,4 @@ if __name__ == "__main__":
     input_file_path = sys.argv[1]
     output_file_path = sys.argv[2]
 
-    process_file(input_file_path, output_file_path)
+   
