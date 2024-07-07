@@ -11,7 +11,7 @@ def process_file(input_file_path, output_file_path):
     processed_data = []
 
     for item in data:
-        if 'names' in item and item['names'] is not None and len(item['names']) > 1:
+        if 'names' in item and item['names'] is not None:
             for name in item['names']:
                 new_item = OrderedDict()
                 new_item['filename'] = item['filename']
@@ -23,17 +23,13 @@ def process_file(input_file_path, output_file_path):
                 new_item['filepath'] = item['filepath']
                 processed_data.append(new_item)
         else:
-            if 'names' in item and item['names']:
-                item['name'] = item['names'][0]
-            else:
-                item['name'] = None
             new_item = OrderedDict()
             new_item['filename'] = item['filename']
             new_item['organization'] = item['organization']
             new_item['docketID'] = item['docketID']
             new_item['filetype'] = item['filetype']
             new_item['filesize'] = item['filesize']
-            new_item['name'] = item['name']
+            new_item['name'] = None
             new_item['filepath'] = item['filepath']
             processed_data.append(new_item)
 
