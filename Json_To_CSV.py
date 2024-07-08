@@ -8,15 +8,15 @@ def json_to_csv(input_file):
         with open(input_file, 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
 
-        # Extract headers from the keys of the first item
-        headers = list(data[0].keys())
+        # Adjust field names to match your JSON keys
+        fieldnames = ['Organization', 'Filename', 'Filesize', 'DocketID', 'Filetype', 'Name', 'Year', 'Filepath']
 
         # Prepare CSV output file
         output_file = input_file.replace('.json', '.csv')
 
         # Write to CSV file with escapechar set to handle special characters
         with open(output_file, 'w', newline='', encoding='utf-8') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=headers, escapechar='\\')
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames, extrasaction='ignore', escapechar='\\')
             writer.writeheader()
             for row in data:
                 writer.writerow(row)
