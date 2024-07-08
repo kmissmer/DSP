@@ -1,33 +1,39 @@
-import pandas as pd
 import json
-import os
+import csv
 import sys
 
-def json_to_csv(json_file_path, csv_file_path=None):
+def json_to_csv(input_file):
     try:
-        # Load the JSON data from the file
-        with open(json_file_path, 'r') as json_file:
-            json_data = json.load(json_file)
-        
-        # Convert JSON data to pandas DataFrame
-        df = pd.json_normalize(json_data)
-        
-        # Determine output CSV file path
-        if csv_file_path is None:
-            # If csv_file_path is not provided, generate it based on json_file_path
-            base_name = os.path.splitext(os.path.basename(json_file_path))[0]
-            csv_file_path = os.path.join(os.path.dirname(json_file_path), f"{base_name}.csv")
-        
-        # Save DataFrame to CSV
-        df.to_csv(csv_file_path, index=False)
-        
-        print(f"JSON data successfully converted to CSV and saved to {csv_file_path}")
+        # Load JSON data
+        with open(input_file, 'r', encoding='utf-8') as json_file:
+            data = json.load(json_file)
+
+        # Extract headers from the keys of the first item
+        headers = list(data[0].keys())
+
+        # Prepare CSV output file
+        output_file = input_file.replace('.json', '.csv')
+
+        # Write to CSV file
+        with open(output_file, 'w', newline='', encoding='utf-8') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=headers)
+            writer.writeheader()
+            for row in data:
+                writer.writerow(row)
+
+        print(f"CSV file '{output_file}' successfully created.")
+
+    except FileNotFoundError as e:
+        print(f"Error: {e}. Please check the file path.")
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}. Please ensure the input file is valid JSON.")
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Unexpected error: {e}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python json_to_csv.py <json_file_path>")
-    else:
-        json_file_path = sys.argv[1]
-        json_to_csv(json_file_path)
+        print("Usage: python3 json_to_csv.py InputFile.json")
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+    json_to_csv(input_file)
