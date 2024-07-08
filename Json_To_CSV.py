@@ -14,9 +14,9 @@ def json_to_csv(input_file):
         # Prepare CSV output file
         output_file = input_file.replace('.json', '.csv')
 
-        # Write to CSV file
+        # Write to CSV file with escapechar set to handle special characters
         with open(output_file, 'w', newline='', encoding='utf-8') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=headers)
+            writer = csv.DictWriter(csv_file, fieldnames=headers, escapechar='\\')
             writer.writeheader()
             for row in data:
                 writer.writerow(row)
