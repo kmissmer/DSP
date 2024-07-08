@@ -21,23 +21,23 @@ def process_file(input_file_path, output_file_path):
                     new_item = OrderedDict()
                     new_item['Organization'] = item['organization']
                     new_item['Filename'] = item['filename']
+                    new_item['Filesize'] = item['filesize']
                     new_item['DocketID'] = item['docketID']
                     new_item['Filetype'] = item['filetype']
-                    new_item['Filesize'] = item['filesize']
                     new_item['Name'] = name
                     new_item['Year'] = item['year']
                     new_item['Filepath'] = item['filepath']
                     processed_data.append(new_item)
             else:
                 new_item = OrderedDict()
-                new_item['filename'] = item['filename']
-                new_item['organization'] = item['organization']
-                new_item['docketID'] = item['docketID']
-                new_item['filetype'] = item['filetype']
-                new_item['filesize'] = item['filesize']
-                new_item['name'] = None
-                new_item['year'] = item['year']
-                new_item['filepath'] = item['filepath']
+                new_item['Organization'] = item['organization']
+                new_item['Filename'] = item['filename']
+                new_item['Filesize'] = item['filesize']
+                new_item['DocketID'] = item['docketID']
+                new_item['Filetype'] = item['filetype']
+                new_item['Name'] = None
+                new_item['Year'] = item['year']
+                new_item['Filepath'] = item['filepath']
                 processed_data.append(new_item)
 
         # Output the processed data to a new JSON file
