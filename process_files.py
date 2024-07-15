@@ -9,39 +9,32 @@ def process_file(input_file_path, output_file_path):
             data = json.load(file)
 
         # Group data by DocketID
-        dockets = defaultdict(list)
+        dockets = defaultdict(lambda: defaultdict(int))
+
         for item in data:
+            # Check if the required fields exist, if not, skip this item
+            if not all(key in item for key in ['Filename', 'Organization', 'DocketID', 'Filetype', 'Filesize', 'Year', 'Filepath']):
+                continue
+
             docket_id = item['DocketID']
-            dockets[docket_id].append(item)
+            name = item.get('Name', 'Null')
+            dockets[docket_id][name] += 1
 
         processed_data = []
 
-        for docket_id, items in dockets.items():
-            name_counts = defaultdict(int)
-
-            for item in items:
-                # Check if the required fields exist, if not, skip this item
-                if not all(key in item for key in ['FileName', 'Organization', 'DocketID', 'FileType', 'FileSize', 'Year', 'FilePath']):
-                    continue
-
-                name = item.get('Name', 'Null')
-                if name is not None:
-                    name_counts[name] += 1
-
-            for item in items:
-                name = item.get('Name', 'Null')
-                count = name_counts.get(name, 0)
-
+        for docket_id, names in dockets.items():
+            for name, count in names.items():
+                # Create a new item with aggregated count
                 new_item = OrderedDict()
-                new_item['Organization'] = item['Organization']
-                new_item['Filename'] = item['FileName']
-                new_item['Filesize'] = item['FileSize']
-                new_item['DocketID'] = item['DocketID']
-                new_item['Filetype'] = item['FileType']
+                new_item['Organization'] = data[0]['Organization']  # Assuming all items have the same Organization
+                new_item['Filename'] = None  # Filename is irrelevant in aggregated data
+                new_item['Filesize'] = None  # Filesize is irrelevant in aggregated data
+                new_item['DocketID'] = docket_id
+                new_item['Filetype'] = None  # Filetype is irrelevant in aggregated data
                 new_item['Name'] = name
                 new_item['Count'] = count
-                new_item['Year'] = item['Year']
-                new_item['Filepath'] = item['FilePath']
+                new_item['Year'] = data[0]['Year']  # Assuming all items have the same Year
+                new_item['Filepath'] = None  # Filepath is irrelevant in aggregated data
                 processed_data.append(new_item)
 
         # Output the processed data to a new JSON file
