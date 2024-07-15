@@ -21,15 +21,16 @@ def process_file(input_file_path, output_file_path):
 
             for item in items:
                 # Check if the required fields exist, if not, skip this item
-                if not all(key in item for key in ['filename', 'organization', 'docketID', 'filetype', 'filesize', 'year', 'filepath']):
+                if not all(key in item for key in ['FileName', 'Organization', 'DocketID', 'FileType', 'FileSize', 'Year', 'FilePath']):
                     continue
 
                 name = item.get('Name', 'Null')
-                name_counts[name] += 1
+                if name is not None:
+                    name_counts[name] += 1
 
             for item in items:
                 name = item.get('Name', 'Null')
-                count = name_counts[name]
+                count = name_counts.get(name, 0)
 
                 new_item = OrderedDict()
                 new_item['Organization'] = item['Organization']
