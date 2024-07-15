@@ -8,8 +8,8 @@ def process_file(input_file_path, output_file_path):
         with open(input_file_path, 'r') as file:
             data = json.load(file)
 
-        # Group data by DocketID
-        dockets = defaultdict(lambda: defaultdict(int))
+        # Group data by DocketID and aggregate names
+        dockets = defaultdict(lambda: defaultdict(lambda: {'count': 0, 'organization': '', 'year': 0}))
 
         for item in data:
             # Check if the required fields exist, if not, skip this item
@@ -18,22 +18,24 @@ def process_file(input_file_path, output_file_path):
 
             docket_id = item['DocketID']
             name = item.get('Name', 'Null')
-            dockets[docket_id][name] += 1
+            dockets[docket_id][name]['count'] += 1
+            dockets[docket_id][name]['organization'] = item['Organization']
+            dockets[docket_id][name]['year'] = item['Year']
 
         processed_data = []
 
         for docket_id, names in dockets.items():
-            for name, count in names.items():
+            for name, details in names.items():
                 # Create a new item with aggregated count
                 new_item = OrderedDict()
-                new_item['Organization'] = data[0]['Organization']  # Assuming all items have the same Organization
+                new_item['Organization'] = details['organization']
                 new_item['Filename'] = None  # Filename is irrelevant in aggregated data
                 new_item['Filesize'] = None  # Filesize is irrelevant in aggregated data
                 new_item['DocketID'] = docket_id
                 new_item['Filetype'] = None  # Filetype is irrelevant in aggregated data
                 new_item['Name'] = name
-                new_item['Count'] = count
-                new_item['Year'] = data[0]['Year']  # Assuming all items have the same Year
+                new_item['Count'] = details['count']
+                new_item['Year'] = details['year']
                 new_item['Filepath'] = None  # Filepath is irrelevant in aggregated data
                 processed_data.append(new_item)
 
