@@ -17,31 +17,37 @@ def process_file(input_file_path, output_file_path):
         processed_data = []
 
         for docket_id, items in dockets.items():
-            name_counts = 1
+            name_counts = defaultdict(int)
 
             for item in items:
                 # Check if the required fields exist, if not, skip this item
-                if not all(key in item for key in ['filename', 'organization', 'docketID', 'filetype', 'filesize', 'year', 'filepath']):
+                if not all(key in item for key in ['FileName', 'Organization', 'DocketID', 'FileType', 'FileSize', 'Year', 'FilePath']):
                     continue
 
                 name = item.get('Name', 'Null')
                 name_counts[name] += 1
 
+            # To ensure each name within the same docket is output only once
+            seen_names = set()
+
             for item in items:
                 name = item.get('Name', 'Null')
                 count = name_counts[name]
 
-                new_item = OrderedDict()
-                new_item['Organization'] = item['Organization']
-                new_item['Filename'] = item['FileName']
-                new_item['Filesize'] = item['FileSize']
-                new_item['DocketID'] = item['DocketID']
-                new_item['Filetype'] = item['FileType']
-                new_item['Name'] = name
-                new_item['Count'] = count
-                new_item['Year'] = item['Year']
-                new_item['Filepath'] = item['FilePath']
-                processed_data.append(new_item)
+                if name not in seen_names:
+                    seen_names.add(name)
+
+                    new_item = OrderedDict()
+                    new_item['Organization'] = item['Organization']
+                    new_item['Filename'] = item['FileName']
+                    new_item['Filesize'] = item['FileSize']
+                    new_item['DocketID'] = item['DocketID']
+                    new_item['Filetype'] = item['FileType']
+                    new_item['Name'] = name
+                    new_item['Count'] = count
+                    new_item['Year'] = item['Year']
+                    new_item['Filepath'] = item['FilePath']
+                    processed_data.append(new_item)
 
         # Output the processed data to a new JSON file
         with open(output_file_path, 'w') as file:
