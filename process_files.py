@@ -17,7 +17,7 @@ def process_file(input_file_path, output_file_path):
         processed_data = []
 
         for docket_id, items in dockets.items():
-            name_counts = defaultdict(int)
+            name_counts = 1
 
             for item in items:
                 # Check if the required fields exist, if not, skip this item
