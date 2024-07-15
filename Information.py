@@ -106,14 +106,14 @@ def find_names_in_everything(directory_path):
 
                 if names:
                     result = {
-                        "filename": base_filename,
-                        "organization": extract_organization_name(file_path),
-                        "docketID": extract_docket_name(file_path),
-                        "filetype": extract_file_type(file_path),
-                        "filesize": file_size,
-                        "names": names,
-                        "year": extract_year_from_docket_id(extract_docket_name(file_path)),
-                        "filepath": file_path
+                        "Organization": extract_organization_name(file_path),
+                        "FileName": base_filename,
+                        "Filesize": file_size,
+                        "DocketID": extract_docket_name(file_path),
+                        "FileType": extract_file_type(file_path),
+                        "Name": names,
+                        "Year": extract_year_from_docket_id(extract_docket_name(file_path)),
+                        "FilePath": file_path
                     }
                     results.append(result)
                     with open(output_filename, "a") as text_file:
