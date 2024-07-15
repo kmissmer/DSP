@@ -8,31 +8,39 @@ def process_file(input_file_path, output_file_path):
         with open(input_file_path, 'r') as file:
             data = json.load(file)
 
-        # Group data by DocketID and aggregate names
-        dockets = defaultdict(lambda: defaultdict(lambda: {'count': 0, 'organization': '', 'year': 0}))
-
+        # Group data by DocketID
+        dockets = defaultdict(list)
         for item in data:
-            # Check if the required fields exist, if not, skip this item
-            if not all(key in item for key in ['Filename', 'Organization', 'DocketID', 'Filetype', 'Filesize', 'Year', 'Filepath']):
-                continue
-
             docket_id = item['DocketID']
-            name = item.get('Name', 'Null')
-            dockets[docket_id][name]['count'] += 1
-            dockets[docket_id][name]['organization'] = item['Organization']
-            dockets[docket_id][name]['year'] = item['Year']
+            dockets[docket_id].append(item)
 
         processed_data = []
 
-        for docket_id, names in dockets.items():
-            for name, details in names.items():
-                # Create a new item with aggregated count
+        for docket_id, items in dockets.items():
+            name_counts = defaultdict(int)
+
+            for item in items:
+                # Check if the required fields exist, if not, skip this item
+                if not all(key in item for key in ['filename', 'organization', 'docketID', 'filetype', 'filesize', 'year', 'filepath']):
+                    continue
+
+                name = item.get('Name', 'Null')
+                name_counts[name] += 1
+
+            for item in items:
+                name = item.get('Name', 'Null')
+                count = name_counts[name]
+
                 new_item = OrderedDict()
-                new_item['Organization'] = details['organization']
-                new_item['DocketID'] = docket_id
+                new_item['Organization'] = item['Organization']
+                new_item['Filename'] = item['FileName']
+                new_item['Filesize'] = item['FileSize']
+                new_item['DocketID'] = item['DocketID']
+                new_item['Filetype'] = item['FileType']
                 new_item['Name'] = name
-                new_item['Count'] = details['count']
-                new_item['Year'] = details['year']
+                new_item['Count'] = count
+                new_item['Year'] = item['Year']
+                new_item['Filepath'] = item['FilePath']
                 processed_data.append(new_item)
 
         # Output the processed data to a new JSON file
