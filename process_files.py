@@ -1,6 +1,6 @@
 import json
 import sys
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 def process_file(input_file_path, output_file_path):
     try:
@@ -16,8 +16,12 @@ def process_file(input_file_path, output_file_path):
             if not all(key in item for key in ['filename', 'organization', 'docketID', 'filetype', 'filesize', 'year', 'filepath']):
                 continue
             
+            name_counts = defaultdict(int)
             if 'names' in item and item['names'] is not None:
                 for name in item['names']:
+                    name_counts[name] += 1
+
+                for name, count in name_counts.items():
                     new_item = OrderedDict()
                     new_item['Organization'] = item['organization']
                     new_item['Filename'] = item['filename']
@@ -25,6 +29,7 @@ def process_file(input_file_path, output_file_path):
                     new_item['DocketID'] = item['docketID']
                     new_item['Filetype'] = item['filetype']
                     new_item['Name'] = name
+                    new_item['Count'] = count
                     new_item['Year'] = item['year']
                     new_item['Filepath'] = item['filepath']
                     processed_data.append(new_item)
@@ -36,6 +41,7 @@ def process_file(input_file_path, output_file_path):
                 new_item['DocketID'] = item['docketID']
                 new_item['Filetype'] = item['filetype']
                 new_item['Name'] = None
+                new_item['Count'] = 0
                 new_item['Year'] = item['year']
                 new_item['Filepath'] = item['filepath']
                 processed_data.append(new_item)
