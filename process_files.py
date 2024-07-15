@@ -29,14 +29,10 @@ def process_file(input_file_path, output_file_path):
                 # Create a new item with aggregated count
                 new_item = OrderedDict()
                 new_item['Organization'] = details['organization']
-                new_item['Filename'] = None  # Filename is irrelevant in aggregated data
-                new_item['Filesize'] = None  # Filesize is irrelevant in aggregated data
                 new_item['DocketID'] = docket_id
-                new_item['Filetype'] = None  # Filetype is irrelevant in aggregated data
                 new_item['Name'] = name
                 new_item['Count'] = details['count']
                 new_item['Year'] = details['year']
-                new_item['Filepath'] = None  # Filepath is irrelevant in aggregated data
                 processed_data.append(new_item)
 
         # Output the processed data to a new JSON file
