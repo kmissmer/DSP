@@ -21,7 +21,7 @@ def process_file(input_file_path, output_file_path):
 
             for item in items:
                 # Check if the required fields exist, if not, skip this item
-                if not all(key in item for key in ['FileName', 'Organization', 'DocketID', 'FileType', 'FileSize', 'Year', 'FilePath']):
+                if not all(key in item for key in ['FileName', 'Organization', 'DocketID', 'FileType', 'Filesize', 'Year', 'FilePath']):
                     continue
 
                 names = item.get('Name', 'Null')
