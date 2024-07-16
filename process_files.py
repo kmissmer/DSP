@@ -21,8 +21,11 @@ def process_file(input_file_path, output_file_path):
 
             for item in items:
                 # Check if the required fields exist, if not, skip this item
-                if not all(key in item for key in ['Organization', 'FileName', 'Filesize', 'DocketID', 'FileType', 'Year', 'FilePath']):
+                if not all(key in item for key in ['Organization', 'FileName', 'DocketID', 'FileType', 'Year', 'FilePath']):
                     continue
+
+                # Handle both Filesize and FileSize keys
+                filesize = item.get('Filesize') or item.get('FileSize')
 
                 names = item.get('Name', 'Null')
                 if isinstance(names, list):
@@ -46,7 +49,7 @@ def process_file(input_file_path, output_file_path):
                             new_item = OrderedDict()
                             new_item['Organization'] = item['Organization']
                             new_item['Filename'] = item['FileName']
-                            new_item['Filesize'] = item['Filesize']
+                            new_item['Filesize'] = filesize
                             new_item['DocketID'] = item['DocketID']
                             new_item['Filetype'] = item['FileType']
                             new_item['Name'] = name
@@ -63,7 +66,7 @@ def process_file(input_file_path, output_file_path):
                         new_item = OrderedDict()
                         new_item['Organization'] = item['Organization']
                         new_item['Filename'] = item['FileName']
-                        new_item['Filesize'] = item['Filesize']
+                        new_item['Filesize'] = filesize
                         new_item['DocketID'] = item['DocketID']
                         new_item['Filetype'] = item['FileType']
                         new_item['Name'] = names
