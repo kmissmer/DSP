@@ -108,7 +108,7 @@ def find_names_in_everything(directory_path):
                     result = {
                         "Organization": extract_organization_name(file_path),
                         "FileName": base_filename,
-                        "Filesize": file_size,
+                        "FileSize": file_size,
                         "DocketID": extract_docket_name(file_path),
                         "FileType": extract_file_type(file_path),
                         "Name": names,
