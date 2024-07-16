@@ -46,7 +46,7 @@ def process_file(input_file_path, output_file_path):
                             new_item = OrderedDict()
                             new_item['Organization'] = item['Organization']
                             new_item['Filename'] = item['FileName']
-                            new_item['Filesize'] = item['FileSize']
+                            new_item['Filesize'] = item['Filesize']
                             new_item['DocketID'] = item['DocketID']
                             new_item['Filetype'] = item['FileType']
                             new_item['Name'] = name
