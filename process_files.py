@@ -1,50 +1,105 @@
-import os
 import json
-import spacy
+import sys
+from collections import OrderedDict, defaultdict
 
-# Load Spacy model
-nlp = spacy.load("en_core_web_sm")
+def process_file(input_file_path, output_file_path):
+    try:
+        # Load the input JSON file
+        with open(input_file_path, 'r') as file:
+            data = json.load(file)
 
-# Directory containing the files
-directory = 'path_to_directory'
+        # Group data by DocketID
+        dockets = defaultdict(list)
+        for item in data:
+            docket_id = item['DocketID']
+            dockets[docket_id].append(item)
 
-# Function to process a single JSON file
-def process_json_file(filepath):
-    with open(filepath, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-    return extract_names(data, count=1)  # Count is set to 1 for JSON files
+        processed_data = []
 
-# Function to extract names from text
-def extract_names(text, count=1):
-    doc = nlp(text)
-    names = [ent.text for ent in doc.ents if ent.label_ == "PERSON"]
-    return {name: count for name in names}
+        for docket_id, items in dockets.items():
+            name_counts = defaultdict(int)
 
-# Function to process files and aggregate counts
-def process_files(directory):
-    aggregated_counts = {}
-    for filename in os.listdir(directory):
-        filepath = os.path.join(directory, filename)
-        if filename.endswith('.json'):
-            names_counts = process_json_file(filepath)
-        else:
-            with open(filepath, 'r', encoding='utf-8') as file:
-                text = file.read()
-            names_counts = extract_names(text)
-        
-        for name, count in names_counts.items():
-            if name in aggregated_counts:
-                aggregated_counts[name] += count
-            else:
-                aggregated_counts[name] = count
+            for item in items:
+                # Check if the required fields exist, if not, skip this item
+                if not all(key in item for key in ['Organization', 'FileName', 'DocketID', 'FileType', 'Year', 'FilePath']):
+                    continue
 
-    return aggregated_counts
+                # Handle both Filesize and FileSize keys
+                filesize = item.get('Filesize') or item.get('FileSize')
 
-# Main function to run the processing
-def main():
-    aggregated_counts = process_files(directory)
-    for name, count in aggregated_counts.items():
-        print(f'{name}: {count}')
+                names = item.get('Name', 'Null')
+                if isinstance(names, list):
+                    for name in names:
+                        name_counts[name] += 1
+                else:
+                    name_counts[names] += 1
+
+            # To ensure each name within the same docket is output only once
+            seen_names = set()
+
+            for item in items:
+                names = item.get('Name', 'Null')
+                if isinstance(names, list):
+                    for name in names:
+                        if item['FileType'].lower() == 'json':
+                            count = 1
+                        else:
+                            count = name_counts[name]
+
+                        if name not in seen_names:
+                            seen_names.add(name)
+
+                            new_item = OrderedDict()
+                            new_item['Organization'] = item['Organization']
+                            new_item['Filename'] = item['FileName']
+                            new_item['Filesize'] = filesize
+                            new_item['DocketID'] = item['DocketID']
+                            new_item['Filetype'] = item['FileType']
+                            new_item['Name'] = name
+                            new_item['Count'] = count
+                            new_item['Year'] = item['Year']
+                            new_item['Filepath'] = item['FilePath']
+                            processed_data.append(new_item)
+                else:
+                    if item['FileType'].lower() == 'json':
+                        count = 1
+                    else:
+                        count = name_counts[names]
+
+                    if names not in seen_names:
+                        seen_names.add(names)
+
+                        new_item = OrderedDict()
+                        new_item['Organization'] = item['Organization']
+                        new_item['Filename'] = item['FileName']
+                        new_item['Filesize'] = filesize
+                        new_item['DocketID'] = item['DocketID']
+                        new_item['Filetype'] = item['FileType']
+                        new_item['Name'] = names
+                        new_item['Count'] = count
+                        new_item['Year'] = item['Year']
+                        new_item['Filepath'] = item['FilePath']
+                        processed_data.append(new_item)
+
+        # Output the processed data to a new JSON file
+        with open(output_file_path, 'w') as file:
+            json.dump(processed_data, file, indent=4)
+
+        print(f'Processed data and saved it in "{output_file_path}".')
+    
+    except FileNotFoundError:
+        print(f"Error: Input file '{input_file_path}' not found.")
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON in file '{input_file_path}': {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 3:
+        print("Usage: python3 process_files.py InputFile OutputFile")
+        sys.exit(1)
+
+    input_file_path = sys.argv[1]
+    output_file_path = sys.argv[2]
+
+    process_file(input_file_path, output_file_path)
