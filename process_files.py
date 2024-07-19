@@ -41,10 +41,7 @@ def process_file(input_file_path, output_file_path):
                 names = item.get('Name', 'Null')
                 if isinstance(names, list):
                     for name in names:
-                        if item['FileType'].lower() == 'json':
-                            count = 1
-                        else:
-                            count = name_counts[name]
+                        count = name_counts[name]
 
                         if name not in seen_names:
                             seen_names.add(name)
@@ -61,10 +58,7 @@ def process_file(input_file_path, output_file_path):
                             new_item['Filepath'] = item['FilePath']
                             processed_data.append(new_item)
                 else:
-                    if item['FileType'].lower() == 'json':
-                        count = 1
-                    else:
-                        count = name_counts[names]
+                    count = name_counts[names]
 
                     if names not in seen_names:
                         seen_names.add(names)
