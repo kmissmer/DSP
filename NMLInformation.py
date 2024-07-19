@@ -121,6 +121,7 @@ def process_files(directory):
                                 "DocketID": docket_id,
                                 "FileType": file_type,
                                 "Name": full_name,
+                                "Count": 1,  # Always 1 for a single name
                                 "Year": year,  # Include extracted year
                                 "FilePath": abs_file_path  # Add the full file path here
                             }
