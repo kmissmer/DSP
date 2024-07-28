@@ -23,13 +23,10 @@ def extract_file_type(file_path):
     return file_type
 
 def extract_year_from_docket_id(docket_id):
-    # Check if docket_id is None or empty
     if not docket_id:
         return None
-    
-    # Extract the year from the docket_id, assuming the format is consistent
     try:
-        return int(docket_id.split('-')[1])  # Extract the year part from the docket_id
+        return int(docket_id.split('-')[1])
     except (IndexError, ValueError):
         return None
 
@@ -83,9 +80,9 @@ def find_names_in_everything(directory_path):
                 data = output_file.readlines()
                 for line in data:
                     entry = json.loads(line)
-                    file_path = entry.get("filepath")
-                    if file_path:
-                        processed_files.add(file_path)
+                    file_name = entry.get("FileName")
+                    if file_name:
+                        processed_files.add(file_name)
             except json.JSONDecodeError:
                 pass
 
@@ -96,12 +93,12 @@ def find_names_in_everything(directory_path):
             file_path = os.path.join(root, file)
             file_size = os.path.getsize(file_path)
 
-            if file_path in processed_files:
+            base_filename = os.path.basename(file_path)
+            if base_filename in processed_files:
                 print(f"Skipping {file_path}. Already processed.")
                 continue
 
             if file.endswith(('.htm', '.txt')):
-                base_filename = os.path.basename(file_path)
                 names = process_files(file_path, nlp)
 
                 if names:
@@ -135,9 +132,7 @@ def find_names_in_everything(directory_path):
                         text_file.write(json.dumps(result))
                         text_file.write("\n")
 
-                processed_files.add(file_path)
-
-
+                processed_files.add(base_filename)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
