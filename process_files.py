@@ -1,8 +1,9 @@
 import json
 import sys
+import os
 from collections import OrderedDict, defaultdict
 
-def process_file(input_file_path, output_file_path):
+def process_file(input_file_path):
     try:
         # Load the input JSON file
         with open(input_file_path, 'r') as file:
@@ -75,7 +76,11 @@ def process_file(input_file_path, output_file_path):
                         new_item['Filepath'] = item['FilePath']
                         processed_data.append(new_item)
 
-        # Output the processed data to a new JSON file
+        # Define the output file path by changing the extension to .processed.json
+        base_name = os.path.splitext(input_file_path)[0]
+        output_file_path = f"{base_name}_processed.json"
+
+        # Output the processed data to the new JSON file
         with open(output_file_path, 'w') as file:
             json.dump(processed_data, file, indent=4)
 
@@ -89,11 +94,10 @@ def process_file(input_file_path, output_file_path):
         print(f"Unexpected error: {e}")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python3 process_files.py InputFile OutputFile")
+    if len(sys.argv) != 2:
+        print("Usage: python3 process_files.py InputFile")
         sys.exit(1)
 
     input_file_path = sys.argv[1]
-    output_file_path = sys.argv[2]
 
-    process_file(input_file_path, output_file_path)
+    process_file(input_file_path)
