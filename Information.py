@@ -73,22 +73,8 @@ def process_files(file_path, nlp):
         return []
 
 def find_names_in_everything(directory_path):
-    output_filename = "output.txt"
-    processed_files = set()
     nlp = spacy.load("en_core_web_lg")
     nlp.max_length = 1000000
-
-    if os.path.exists(output_filename):
-        with open(output_filename, "r") as output_file:
-            try:
-                data = output_file.readlines()
-                for line in data:
-                    entry = json.loads(line)
-                    file_path = entry.get("FilePath")
-                    if file_path:
-                        processed_files.add(file_path)
-            except json.JSONDecodeError:
-                pass
 
     results = []
 
@@ -98,17 +84,16 @@ def find_names_in_everything(directory_path):
             abs_file_path = os.path.abspath(file_path)
             file_size = os.path.getsize(file_path)
 
-            if abs_file_path in processed_files:
-                print(f"Skipping {file}. Already processed.")
-                continue
-
             if file.endswith(('.htm', '.txt')):
+                org_name = extract_organization_name(file_path)
+                output_filename = f"output{org_name}.txt"
+
                 base_filename = os.path.basename(file_path)
                 names = process_files(file_path, nlp)
 
                 if names:
                     result = {
-                        "Organization": extract_organization_name(file_path),
+                        "Organization": org_name,
                         "FileName": base_filename,
                         "FileSize": file_size,
                         "DocketID": extract_docket_name(file_path),
@@ -123,11 +108,11 @@ def find_names_in_everything(directory_path):
                         text_file.write("\n")
                 else:
                     result = {
-                        "Organization": extract_organization_name(file_path),
+                        "Organization": org_name,
                         "FileName": base_filename,
                         "FileSize": file_size,
                         "DocketID": extract_docket_name(file_path),
-                        "FileType": extract_file_type(file_path),            
+                        "FileType": extract_file_type(file_path),
                         "Name": None,
                         "Year": extract_year_from_docket_id(extract_docket_name(file_path)),
                         "FilePath": abs_file_path
@@ -136,8 +121,6 @@ def find_names_in_everything(directory_path):
                     with open(output_filename, "a") as text_file:
                         text_file.write(json.dumps(result))
                         text_file.write("\n")
-
-                processed_files.add(abs_file_path)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
