@@ -39,7 +39,7 @@ def process_files(directory):
             if file.endswith('.json'):
                 file_path = os.path.join(root, file)
                 organization_name = extract_organization_name(file_path)
-                output_file_name = f'NMLoutput_{organization_name}.txt'
+                output_file_name = f'NMLoutput{organization_name}.txt'
                 break
         if output_file_name:
             break
