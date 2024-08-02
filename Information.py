@@ -82,20 +82,36 @@ def find_names_in_everything(directory_path):
         for file in files:
             file_path = os.path.join(root, file)
             abs_file_path = os.path.abspath(file_path)
-            file_size = os.path.getsize(file_path)
+            base_filename = os.path.basename(file_path)
 
             if file.endswith(('.htm', '.txt')):
                 org_name = extract_organization_name(file_path)
                 output_filename = f"output{org_name}.txt"
 
-                base_filename = os.path.basename(file_path)
+                # Check if the file has already been processed for this organization
+                processed_files = set()
+                if os.path.exists(output_filename):
+                    try:
+                        with open(output_filename, 'r') as output_file:
+                            for line in output_file:
+                                entry = json.loads(line.strip())
+                                processed_filename = entry.get("FileName")
+                                if processed_filename:
+                                    processed_files.add(processed_filename.strip())
+                    except json.JSONDecodeError:
+                        print(f"Error decoding JSON in {output_filename}")
+
+                if base_filename in processed_files:
+                    print(f"Skipping {file}. Already processed.")
+                    continue
+
                 names = process_files(file_path, nlp)
 
                 if names:
                     result = {
                         "Organization": org_name,
                         "FileName": base_filename,
-                        "FileSize": file_size,
+                        "FileSize": os.path.getsize(file_path),
                         "DocketID": extract_docket_name(file_path),
                         "FileType": extract_file_type(file_path),
                         "Name": names,
@@ -110,7 +126,7 @@ def find_names_in_everything(directory_path):
                     result = {
                         "Organization": org_name,
                         "FileName": base_filename,
-                        "FileSize": file_size,
+                        "FileSize": os.path.getsize(file_path),
                         "DocketID": extract_docket_name(file_path),
                         "FileType": extract_file_type(file_path),
                         "Name": None,
