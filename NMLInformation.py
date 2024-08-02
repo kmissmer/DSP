@@ -30,7 +30,23 @@ def extract_year_from_docket_id(docket_id):
         return None
 
 def process_files(directory):
-    output_file_name = 'NMLoutput.txt'
+    processed_files = set()
+
+    # Determine output file name based on organization name
+    output_file_name = None
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith('.json'):
+                file_path = os.path.join(root, file)
+                organization_name = extract_organization_name(file_path)
+                output_file_name = f'NMLoutput_{organization_name}.txt'
+                break
+        if output_file_name:
+            break
+
+    if not output_file_name:
+        print(f"Error: No JSON files found in '{directory}' to determine organization name.")
+        return
 
     if not os.path.exists(directory):
         print(f"Error: The directory '{directory}' does not exist.")
@@ -38,8 +54,6 @@ def process_files(directory):
     if not os.listdir(directory):
         print(f"Error: The directory '{directory}' is empty.")
         return
-
-    processed_files = set()
 
     if os.path.exists(output_file_name):
         with open(output_file_name, "r") as f:
