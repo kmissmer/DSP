@@ -91,15 +91,15 @@ def find_names_in_everything(directory_path):
                 # Check if the file has already been processed for this organization
                 processed_files = set()
                 if os.path.exists(output_filename):
-                    try:
-                        with open(output_filename, 'r') as output_file:
+                    with open(output_filename, 'r') as output_file:
+                        try:
                             for line in output_file:
                                 entry = json.loads(line.strip())
                                 processed_filename = entry.get("FileName")
                                 if processed_filename:
                                     processed_files.add(processed_filename.strip())
-                    except json.JSONDecodeError:
-                        print(f"Error decoding JSON in {output_filename}")
+                        except json.JSONDecodeError:
+                            print(f"Error decoding JSON in {output_filename}")
 
                 if base_filename in processed_files:
                     print(f"Skipping {file}. Already processed.")
