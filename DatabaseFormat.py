@@ -1,6 +1,7 @@
 import csv
 import sys
 from collections import defaultdict
+from datetime import datetime
 
 def remove_null_bytes(input_file_path, cleaned_file_path):
     with open(input_file_path, 'rb') as infile, open(cleaned_file_path, 'wb') as outfile:
@@ -19,6 +20,9 @@ def process_csv(input_file_path):
             csvreader = csv.DictReader(csvfile)
             data = [row for row in csvreader]
 
+        # Get the current date in YEAR-MONTH-DAY format
+        current_date = datetime.now().strftime("%Y-%m-%d")
+
         # Group data by Organization
         organizations = defaultdict(list)
         for row in data:
@@ -27,7 +31,7 @@ def process_csv(input_file_path):
 
         for org, rows in organizations.items():
             # Process and write the INFO file
-            info_file_path = f"{org}_INF.csv"
+            info_file_path = f"{org}_INF_{current_date}.csv"
             with open(info_file_path, mode='w', newline='') as infofile:
                 fieldnames = ['FileName', 'Organization', 'FileSize', 'DocketID', 'FileType', 'Year', 'FilePath']
                 csvwriter = csv.DictWriter(infofile, fieldnames=fieldnames)
@@ -44,7 +48,7 @@ def process_csv(input_file_path):
                     })
 
             # Process and write the Name file
-            name_file_path = f"{org}_Name.csv"
+            name_file_path = f"{org}_Name_{current_date}.csv"
             with open(name_file_path, mode='w', newline='') as namefile:
                 fieldnames = ['FileName', 'Name', 'Count']
                 csvwriter = csv.DictWriter(namefile, fieldnames=fieldnames)
