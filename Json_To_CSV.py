@@ -9,7 +9,7 @@ def json_to_csv(input_file):
             data = json.load(json_file)
 
         # Adjust field names to match your JSON keys
-        fieldnames = ['Organization', 'FileName', 'FileSize', 'DocketID', 'FileType', 'Name', 'Count', 'Year', 'FilePath']
+        fieldnames = ['Organization', 'Filename', 'Filesize', 'DocketID', 'Filetype', 'Name', 'Count', 'Year', 'Filepath']
 
         # Prepare CSV output file
         output_file = input_file.replace('.json', '.csv')

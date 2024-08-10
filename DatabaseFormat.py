@@ -16,7 +16,7 @@ def process_csv(input_file_path):
 
     try:
         # Read the cleaned CSV file
-        with open(cleaned_file_path, mode='r') as csvfile:
+        with open(cleaned_file_path, mode='r', encoding='utf-8') as csvfile:
             csvreader = csv.DictReader(csvfile)
             data = [row for row in csvreader]
 
@@ -32,14 +32,14 @@ def process_csv(input_file_path):
         for org, rows in organizations.items():
             # Process and write the INFO file
             info_file_path = f"{org}_INF_{current_date}.csv"
-            with open(info_file_path, mode='w', newline='') as infofile:
-                fieldnames = ['FileName', 'Organization', 'FileSize', 'DocketID', 'FileType', 'Year', 'FilePath']
+            with open(info_file_path, mode='w', newline='', encoding='utf-8') as infofile:
+                fieldnames = ['Organization', 'FileName', 'FileSize', 'DocketID', 'FileType', 'Year', 'FilePath']
                 csvwriter = csv.DictWriter(infofile, fieldnames=fieldnames)
                 csvwriter.writeheader()
                 for row in rows:
                     csvwriter.writerow({
-                        'FileName': row['FileName'],
                         'Organization': row['Organization'],
+                        'FileName': row['FileName'],
                         'FileSize': row['FileSize'],
                         'DocketID': row['DocketID'],
                         'FileType': row['FileType'],
@@ -49,7 +49,7 @@ def process_csv(input_file_path):
 
             # Process and write the Name file
             name_file_path = f"{org}_Name_{current_date}.csv"
-            with open(name_file_path, mode='w', newline='') as namefile:
+            with open(name_file_path, mode='w', newline='', encoding='utf-8') as namefile:
                 fieldnames = ['FileName', 'Name', 'Count']
                 csvwriter = csv.DictWriter(namefile, fieldnames=fieldnames)
                 csvwriter.writeheader()
