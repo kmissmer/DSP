@@ -33,29 +33,29 @@ def process_csv(input_file_path):
             # Process and write the INFO file
             info_file_path = f"{org}_INF_{current_date}.csv"
             with open(info_file_path, mode='w', newline='', encoding='utf-8') as infofile:
-                fieldnames = ['Organization', 'FileName', 'FileSize', 'DocketID', 'FileType', 'Year', 'FilePath']
+                fieldnames = ['Organization', 'Filename', 'Filesize', 'DocketID', 'Filetype', 'Year', 'Filepath']
                 csvwriter = csv.DictWriter(infofile, fieldnames=fieldnames)
                 csvwriter.writeheader()
                 for row in rows:
                     csvwriter.writerow({
                         'Organization': row['Organization'],
-                        'FileName': row['FileName'],
-                        'FileSize': row['FileSize'],
+                        'Filename': row['Filename'],
+                        'Filesize': row['Filesize'],
                         'DocketID': row['DocketID'],
-                        'FileType': row['FileType'],
+                        'Filetype': row['Filetype'],
                         'Year': row['Year'],
-                        'FilePath': row['FilePath']
+                        'Filepath': row['Filepath']
                     })
 
             # Process and write the Name file
             name_file_path = f"{org}_Name_{current_date}.csv"
             with open(name_file_path, mode='w', newline='', encoding='utf-8') as namefile:
-                fieldnames = ['FileName', 'Name', 'Count']
+                fieldnames = ['Filename', 'Name', 'Count']
                 csvwriter = csv.DictWriter(namefile, fieldnames=fieldnames)
                 csvwriter.writeheader()
                 for row in rows:
                     csvwriter.writerow({
-                        'FileName': row['FileName'],
+                        'FileName': row['Filename'],
                         'Name': row['Name'],
                         'Count': row['Count']
                     })
