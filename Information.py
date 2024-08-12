@@ -3,6 +3,8 @@ import os
 import json
 from datetime import datetime
 import sys
+import re
+
 
 def extract_organization_name(file_path):
     parts = file_path.split('/')
@@ -26,7 +28,12 @@ def extract_year_from_docket_id(docket_id):
     if not docket_id:
         return None
     try:
-        return int(docket_id.split('-')[1])
+        # Search for the first occurrence of a 4-digit number in the docket ID
+        match = re.search(r'\b\d{4}\b', docket_id)
+        if match:
+            return int(match.group(0))
+        else:
+            return None
     except (IndexError, ValueError):
         return None
 
