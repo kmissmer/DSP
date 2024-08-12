@@ -55,7 +55,7 @@ def process_csv(input_file_path):
                 csvwriter.writeheader()
                 for row in rows:
                     csvwriter.writerow({
-                        'FileName': row['Filename'],
+                        'Filename': row['Filename'],
                         'Name': row['Name'],
                         'Count': row['Count']
                     })
